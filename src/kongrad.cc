@@ -6,7 +6,7 @@
 * @brief Mulitply a matrix and a vector
 * 
 */
-void MatrixVector(vector<vector<double> > Matrix, vector<double> vecin, vector<double> vecout){
+void KonGrad::MatrixVector(vector<vector<double> > Matrix, vector<double> vecin, vector<double> vecout){
     //check if dimensions are correct
     const int vecinDim = vecin.size();
     const int vecoutDim = vecout.size();
