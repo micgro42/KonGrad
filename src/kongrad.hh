@@ -8,8 +8,9 @@ class KonGrad{
     public:
         KonGrad(vector<vector<double> > Matrix, vector<double> b);
         void testmv (vector<double> vecin);
+        void printVector (const vector<double> &vec);
     private:
-        void matrixVector(vector< vector<double> > Matrix, vector<double> vecin, vector<double> vecout);
+        void matrixVector(const vector< vector<double> > &Matrix, const vector<double> &vecin, vector<double> &vecout);
 
         vector<vector<double> > A;
         vector<double> b;

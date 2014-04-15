@@ -5,14 +5,13 @@ using namespace std;
 
 
 int main(){
-    cout << "hello world" << endl;
     
-    //erschaffe Einheitsmatrix 3x3
+    //erschaffe 2*Einheitsmatrix 3x3
     vector< vector<double> > A;
     vector<double> line;
     for (int i=0;i<3;++i){
         line.assign(3,0);
-        line.at(i)=1;
+        line.at(i)=2;
         A.push_back(line);
     }
     
