@@ -3,8 +3,11 @@ CFLAGS= -c -std=c++11
 
 
 
-all: kongrad.cc kongrad.hh main.cc
-	$(CC) -o $(CFLAGS) main kongrad.cc main.cc
+all: kongrad.o main.o
+	$(CC) $(CFLAGS) kongrad.o main.o -o main
+
+kongrad.o: kongrad.cc kongrad.hh
+	$(CC) $(CFLAGS) kongrad.cc
 	
 main: main.o
 	$(CC) main.o -o main
