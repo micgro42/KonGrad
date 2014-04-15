@@ -23,6 +23,12 @@ int main(){
     KonGrad LGS01(A, b);
     LGS01.testmv(b);
     
+    vector<double> c;
+    c.push_back(1);
+    c.push_back(1);
+    c.push_back(1);
+    LGS01.solve(c);
+    
     return 0;
 }
 

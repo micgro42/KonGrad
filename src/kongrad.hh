@@ -9,19 +9,25 @@ using namespace std;
 /**
  * @class KonGrad
  * 
- * @brief Class to store a linear system of equations
+ * @brief Class to store and solve linear system of equations
  * 
  */
 class KonGrad{
     public:
         ///The Constructor
-        KonGrad(vector<vector<double> > Matrix, vector<double> b);
+        KonGrad(vector<vector<double> > Matrix, vector<double> vec);
         
         /**
          * @brief test the matrix multiplication routine
          * 
          */
         void testmv (vector<double> vecin);
+        
+        double skalarProd(const vector<double> &vecin1, const vector<double> &vecin2);
+        
+        void solve (const vector<double> &startvec);
+        void solve ();
+        
     private:
         
         /**
@@ -34,16 +40,29 @@ class KonGrad{
          * 
          * @param[in] matrix ...
          * 
+         * @param[in] vecin ...
+         * 
          * @param[out] vecout ...
          * 
          */
-        void matrixVector(const vector< vector<double> > &Matrix, const vector<double> &vecin, vector<double> &vecout);
+        void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
+        
+        /**
+         * @brief subtracts one vector from another and writes the result to a third
+         */
+        void diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
+        
+        /// sum of two vectors
+        void sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
+        
+        ///skalar times vector
+        void skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout);
         
         /// (sparse) matrix
-        vector<vector<double> > A;
+        vector<vector<double> > _A;
         
         /// "known right side"
-        vector<double> b;
+        vector<double> _b;
 };
 
 #endif
