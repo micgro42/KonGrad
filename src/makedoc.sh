@@ -14,6 +14,8 @@ then
   sed -i 's/^CALLER_GRAPHS.*/CALLER_GRAPH = YES/' Doxyfile
   sed -i 's/^DOT_MULTI_TARGETS.*/DOT_MULTI_TARGETS = YES/' Doxyfile
   sed -i 's/^WARN_LOGFILE.*/WARN_LOGFILE = doxywarnings.log/' Doxyfile
+  sed -i 's/^EXCLUDE.*/EXCLUDE = Logging.cc Logging.hh/' Doxyfile
+  sed -i 's/^OUTPUT_DIRECTORY.*/OUTPUT_DIRECTORY = ..\/doc/' Doxyfile
 fi
 
 doxygen Doxyfile
