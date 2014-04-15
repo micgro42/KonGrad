@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cassert>
 
-///Constructor
+
 KonGrad::KonGrad(vector< vector<double> > Matrix, vector<double> vec){
     KonGrad::A=Matrix;
     KonGrad::b=vec;
@@ -16,10 +16,7 @@ void KonGrad::testmv(const vector<double> vecin){
 }
 
 
-/**
- * @brief Mulitply a matrix and a vector
- * 
- */
+
 void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout){
     //check if dimensions are correct
     const int vecinDim = vecin.size();
