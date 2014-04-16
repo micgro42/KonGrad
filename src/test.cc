@@ -19,7 +19,9 @@ BOOST_AUTO_TEST_CASE( skalarProd ){
     b.push_back(2);
     b.push_back(2);
     
-    KonGrad LGS01(A, b);
+//     KonGrad LGS01(A, b);
     
-    BOOST_CHECK_EQUAL( LGS01.skalarProd(b,b) , 8 );
+//     BOOST_CHECK_EQUAL( LGS01.skalarProd(b,b) , 8 );
+    BOOST_CHECK_EQUAL(0,0);
+    BOOST_CHECK_EQUAL(0,1);
 }
