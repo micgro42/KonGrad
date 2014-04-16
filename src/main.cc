@@ -4,7 +4,7 @@
 using namespace std;
 
 
-int main(){
+int main(int argc, char** argv){
     
     //erschaffe 2*Einheitsmatrix 3x3
     vector< vector<double> > A;
@@ -25,7 +25,7 @@ int main(){
     
     vector<double> c;
     c.push_back(1);
-    c.push_back(1);
+    c.push_back(5);
     c.push_back(1);
     LGS01.solve(c);
     

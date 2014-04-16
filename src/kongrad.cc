@@ -26,7 +26,7 @@ KonGrad::KonGrad(){
 
 void KonGrad::testmv(const vector<double> vecin){
     vector<double> vecout;
-    KonGrad::matrixVector(this->_A,vecin, vecout);
+    KonGrad::matrixVector(_A,vecin, vecout);
 }
 
 
@@ -43,7 +43,6 @@ void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<
         }
         
     }
-    this->printVector(vecout);
 }
 
 void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
@@ -120,11 +119,9 @@ void KonGrad::solve (const vector<double> &startvec){
     
     //temporäre Vektoren
     vector<double> tmpvec;
-    vector<double> tmpvarMatvec;
-    vector<double> tmpvarvecdiff;
     
-    matrixVector(_A,startvec,tmpvarMatvec);
-    diffVector(_b,tmpvarMatvec, r);
+    matrixVector(_A,startvec,tmpvec);
+    diffVector(_b,tmpvec, r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
         cout << "done" << endl;
         return; /// @todo write better exit at start
@@ -152,6 +149,9 @@ void KonGrad::solve (const vector<double> &startvec){
         sumVector(rnew,tmpvec,pnew);
         p=pnew;
         r=rnew;
+        x=xnew;
     }
+    
+    printVector(xnew);
     
 }
