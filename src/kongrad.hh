@@ -25,15 +25,17 @@ class KonGrad{
         
         double skalarProd(const vector<double> &vecin1, const vector<double> &vecin2);
         
-        void solve (const vector<double> &startvec);
-        void solve ();
-        
-    private:
         
         /**
-         * @brief print the vector to stdout
+         * @brief subtracts one vector from another and writes the result to a third
          */
-        void printVector (const vector<double> &vec);
+        void diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
+        
+        /// sum of two vectors
+        void sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
+        
+        ///skalar times vector
+        void skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout);
         
         /**
          * @brief Mulitply a matrix and a vector
@@ -47,16 +49,18 @@ class KonGrad{
          */
         void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
         
+        void solve (const vector<double> &startvec);
+        void solve ();
+        
+    private:
+        
         /**
-         * @brief subtracts one vector from another and writes the result to a third
+         * @brief print the vector to stdout
          */
-        void diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
+        void printVector (const vector<double> &vec);
         
-        /// sum of two vectors
-        void sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
         
-        ///skalar times vector
-        void skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout);
+        
         
         /// (sparse) matrix
         vector<vector<double> > _A;
