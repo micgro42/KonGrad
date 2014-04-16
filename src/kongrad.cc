@@ -6,9 +6,22 @@
 
 
 KonGrad::KonGrad(vector< vector<double> > Matrix, vector<double> vec){
-    this->_A=Matrix;
-    this->_b=vec;
+    _A=Matrix;
+    _b=vec;
 }
+
+KonGrad::KonGrad(){
+    vector<double> line;
+    for (int i=0;i<3;++i){
+        line.assign(3,0);
+        line.at(i)=1;
+        _A.push_back(line);
+    }
+    
+    _b.assign(3,0);
+}
+
+
 
 
 void KonGrad::testmv(const vector<double> vecin){

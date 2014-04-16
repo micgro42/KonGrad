@@ -12,8 +12,8 @@ kongrad.o: kongrad.cc kongrad.hh
 main.o: main.cc
 	$(CC) $(CFLAGS) -c main.cc
 	
-test: test.o
-	$(CC) test.o -o test
+test: test.o kongrad.o
+	$(CC) test.o kongrad.o -o test
 
 test.o: test.cc
 	$(CC) $(CFLAGS) -c test.cc

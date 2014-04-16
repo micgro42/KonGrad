@@ -16,6 +16,8 @@ class KonGrad{
     public:
         ///The Constructor
         KonGrad(vector<vector<double> > Matrix, vector<double> vec);
+        ///The default constructor
+        KonGrad();
         
         /**
          * @brief test the matrix multiplication routine
