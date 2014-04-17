@@ -5,9 +5,7 @@
 #include <cmath>
 
 
-KonGrad::KonGrad(vector< vector<double> > Matrix, vector<double> vec){
-    _A=Matrix;
-    _b=vec;
+KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
 }
 
 KonGrad::KonGrad(){
@@ -107,8 +105,6 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
 void KonGrad::solve (const vector<double> &startvec){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
-    double alpha;
-    double beta;
     vector<double> r;
     vector<double> rnew;
     vector<double> p;
@@ -128,9 +124,11 @@ void KonGrad::solve (const vector<double> &startvec){
     }
     p=r;
     
-    bool notYetSmallEnough=true;
+    bool converged=false;
     int iternum=0;
-    while(notYetSmallEnough){
+    while(!converged){
+        double alpha;
+        double beta;
         ++iternum;
         matrixVector(_A,p,s);
         alpha=skalarProd(p,r)/skalarProd(p,s);
@@ -141,7 +139,7 @@ void KonGrad::solve (const vector<double> &startvec){
         
         if(sqrt(skalarProd(rnew,rnew))/bnorm < tol){
             cout << "done, iterations: " << iternum << endl;
-            notYetSmallEnough=false; 
+            converged=true; 
         }
         
         beta=sqrt(skalarProd(rnew,rnew))/sqrt(skalarProd(r,r));

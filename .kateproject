@@ -1,0 +1,16 @@
+{
+    "name": "Konjugate Gradient"
+  , "files": [{"directory": ".",
+  "filters": [
+      "*.cc",  
+      "*.hh",
+      "*.sh",
+      "Doxyfile",
+      "Makefile"
+    ],  "recursive": 1 } ]
+  , "build": {
+      "directory": "src"
+    , "build": "make -j4 all"
+    , "clean": "make clean"
+  }
+}
