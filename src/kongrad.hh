@@ -70,8 +70,8 @@ class KonGrad{
         /// make a matrix is symmetric
         void makeMatrixSymmetric(const vector< vector<double> > &matrixin, vector< vector<double> > &matrixout);
         
-        
-        void createRandomSparseSymmetricMatrix(int seed, vector< vector<double> > &matrixout);
+        double getRandomUni(double seed);
+        void createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout);
         
         
         void solve (const vector<double> &startvec);

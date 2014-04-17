@@ -1,10 +1,23 @@
 #include "kongrad.hh"
 #include <iostream>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 
+namespace logging = boost::log;
 using namespace std;
 
+void init()
+{
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::info
+    );
+}
 
 int main(int argc, char** argv){
+    
+    init();
     
     //erschaffe 2*Einheitsmatrix 3x3
     vector< vector<double> > A;

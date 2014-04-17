@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <boost/log/trivial.hpp>
 
 
 KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
@@ -102,6 +103,33 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
 }
 
 
+double KonGrad::getRandomUni(double seed){
+    /// @todo zufallsgenerator so umschreiben, dass der generator nur einmal gestartet wird und danach nur weitere Zahlen geholt werden.
+    // generators for non-zero elements of matrix. for now only diagonal matrices are created and so the position is fixed.
+    double trueSeed=time(NULL)+seed;
+    default_random_engine generator(trueSeed);
+    uniform_real_distribution<double> distributiond(0.0,1.0); // to generate the values
+    // uniform_int_distribution<int> distributioni(1,fMatDim); // to generate the position of the nonzero elements
+    
+    return distributiond(generator);
+}
+
+void KonGrad::createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout){
+    for (int i=0;i<dim;++i){
+        vector<double> line(dim,0);
+        int numNonZero=3*getRandomUni(seed);
+        for (int j=0;j<numNonZero;++j){
+            int posInLine;
+            do{
+                posInLine=dim*getRandomUni(seed);
+            }while(line.at(posInLine)!=0);
+            line.at(posInLine)=getRandomUni(seed);
+        }
+        matrixout.push_back(line);
+    }
+}
+
+
 void KonGrad::solve (const vector<double> &startvec){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
@@ -138,8 +166,8 @@ void KonGrad::solve (const vector<double> &startvec){
         diffVector(r,tmpvec,rnew);
         
         if(sqrt(skalarProd(rnew,rnew))/bnorm < tol){
-            cout << "done, iterations: " << iternum << endl;
-            converged=true; 
+            BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
+            converged=true;
         }
         
         beta=sqrt(skalarProd(rnew,rnew))/sqrt(skalarProd(r,r));

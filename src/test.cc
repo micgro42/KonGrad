@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE kongrad_test
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
+#include <boost/log/trivial.hpp>
 #include "kongrad.hh"
 #include <vector>
 /**
@@ -117,6 +118,8 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
 
 }
 
+
+/// @todo solve1 testcase fertig schreiben
 BOOST_FIXTURE_TEST_CASE(solve1, F){
     
     
@@ -138,5 +141,70 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     
 }
 
+BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
+    cout << testSLE.getRandomUni(0)<<endl;
+    cout << testSLE.getRandomUni(0)<<endl;
+    cout << testSLE.getRandomUni(0)<<endl;
+    cout << testSLE.getRandomUni(0)<<endl;
+    cout << testSLE.getRandomUni(0)<<endl;
+    double seed=time(NULL);
+    cout << "seed " << seed << endl;
+    cout << testSLE.getRandomUni(seed)<<endl;
+    cout << testSLE.getRandomUni(seed)<<endl;
+    cout << testSLE.getRandomUni(seed)<<endl;
+    cout << testSLE.getRandomUni(seed)<<endl;
+}
+
+
+BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
+    
+    
+    vector< vector<double> > matrix;
+    int dim = 1000;
+    int seed =0;
+    
+    testSLE.createRandomSparseSymmetricMatrix(dim, seed, matrix);
+    
+    BOOST_CHECK_EQUAL(matrix.size(),dim);
+    
+    for (int i=0;i<dim;++i){
+        BOOST_CHECK_EQUAL(matrix.at(i).size(),dim);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F){
+    
+    vector< vector<double> > matrix;
+    int dim = 1000;
+    int seed =0;
+    
+    testSLE.createRandomSparseSymmetricMatrix(dim, seed, matrix);
+    int nonZeroTotal=0;
+    for (int i=0;i<dim;++i){
+        int nonZero=0;
+        for (int j=0;j<dim;++j){
+            if (matrix.at(i).at(j)!=0){
+                ++nonZero;
+            }
+        }
+        BOOST_CHECK(nonZero<3);
+        nonZeroTotal+=nonZero;
+    }
+    BOOST_LOG_TRIVIAL(info) << "The dim of testmatrix: " << dim << " nonZeroTotal: " << nonZeroTotal;
+}
+
 
 BOOST_AUTO_TEST_SUITE_END( )
+
+
+
+
+
+
+
+
+
+
+
+
+

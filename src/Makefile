@@ -1,10 +1,11 @@
 CC=g++
-CFLAGS= -std=c++11 -Wall -pedantic -g -O0
+CFLAGS= -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK
+LDFLAGS= 
+LDLIBS= -L/usr/lib -lpthread -lboost_log -lboost_unit_test_framework
 
 
-
-all: kongrad.o main.o test
-	$(CC) kongrad.o main.o -o main
+all: kongrad.o main.o unittest
+	$(CC) $(LDFLAGS) kongrad.o main.o $(LDLIBS) -o main
 
 kongrad.o: kongrad.cc kongrad.hh
 	$(CC) $(CFLAGS) -c kongrad.cc
@@ -12,8 +13,8 @@ kongrad.o: kongrad.cc kongrad.hh
 main.o: main.cc
 	$(CC) $(CFLAGS) -c main.cc
 	
-test: test.o kongrad.o
-	$(CC) test.o kongrad.o -o test
+unittest: test.o kongrad.o
+	$(CC) $(LDFLAGS) test.o kongrad.o $(LDLIBS) -o unittest
 
 test.o: test.cc
 	$(CC) $(CFLAGS) -c test.cc
