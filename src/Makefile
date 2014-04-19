@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS= -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
 LDFLAGS= 
-LDLIBS= -L/users/stud/micgro42/boost/lib/ -lpthread -lboost_log -lboost_unit_test_framework
+LDLIBS= -L/users/stud/micgro42/boost/lib -lpthread -lboost_log -lboost_unit_test_framework -lboost_thread -lboost_filesystem -lboost_date_time -lboost_chrono -lboost_system
 
 
 all: kongrad.o main.o unittest
