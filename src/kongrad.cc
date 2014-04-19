@@ -106,13 +106,19 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
 double KonGrad::getRandomUni(double seed){
     /// @todo zufallsgenerator so umschreiben, dass der generator nur einmal gestartet wird und danach nur weitere Zahlen geholt werden.
     // generators for non-zero elements of matrix. for now only diagonal matrices are created and so the position is fixed.
-    double trueSeed=time(NULL)+seed;
-    default_random_engine generator(trueSeed);
+//     double trueSeed=time(NULL)+seed;
+//     default_random_engine generator(trueSeed);
     uniform_real_distribution<double> distributiond(0.0,1.0); // to generate the values
     // uniform_int_distribution<int> distributioni(1,fMatDim); // to generate the position of the nonzero elements
     
-    return distributiond(generator);
+    return distributiond(_randGenerator);
 }
+
+void KonGrad::startRandomGenerator (double seed){
+    _randGenerator.seed(seed);
+}
+
+
 
 void KonGrad::createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout){
     for (int i=0;i<dim;++i){
@@ -151,7 +157,7 @@ void KonGrad::solve (const vector<double> &startvec){
         return; /// @todo write better exit at start
     }
     p=r;
-    
+    /// @todo weitere rechnungen in dezidierten Funktionen zusammenfassen
     bool converged=false;
     int iternum=0;
     while(!converged){

@@ -23,6 +23,7 @@
  * 
  */
 struct F {
+
 //     F() : i( 0 ) { std::cout << "setup" << std::endl; }
     F(){
         KonGrad testSLE; // SLE = system of linear equations
@@ -141,7 +142,10 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     
 }
 
+
+/// @todo random test case fertig
 BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
+    testSLE.startRandomGenerator(10);
     cout << testSLE.getRandomUni(0)<<endl;
     cout << testSLE.getRandomUni(0)<<endl;
     cout << testSLE.getRandomUni(0)<<endl;

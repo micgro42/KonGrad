@@ -1,6 +1,7 @@
 #ifndef KONGRAD_HH
 #define KONGRAD_HH
 #include <vector>
+#include <random>
 
 using namespace std;
 
@@ -20,10 +21,16 @@ class KonGrad{
         ///The default constructor, creates 3x3 unitmatirx and 3-dim 0-vector
         KonGrad();
         
+        /// set the Matrix of the system of linear equations
         void setMatrix(const vector< vector<double> > &matrix) {_A=matrix;};
+        
+        /// set the Matrix of the object
         void getMatrix(vector< vector<double> > &matrix) {matrix=_A;};
         
+        /// set the "known right side"
         void setb(const vector<double> &bvec) {_b=bvec;};
+        
+        /// set the "known right side"
         void getb(vector<double> &bvec) {bvec=_b;};
         
         
@@ -55,11 +62,11 @@ class KonGrad{
         /**
          * @brief Mulitply a matrix and a vector
          * 
-         * @param[in] matrix ...
+         * @param[in] matrix this vector remains unchanged
          * 
-         * @param[in] vecin ...
+         * @param[in] vecin this vector remains unchanged
          * 
-         * @param[out] vecout ...
+         * @param[out] vecout the content of this vector is removed and the new vector is written to it
          * 
          */
         void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
@@ -70,11 +77,20 @@ class KonGrad{
         /// make a matrix is symmetric
         void makeMatrixSymmetric(const vector< vector<double> > &matrixin, vector< vector<double> > &matrixout);
         
-        double getRandomUni(double seed);
+        
+        ///starts random generator
+        void startRandomGenerator(double seed);
+        
+        /// returns a random double number between 0 and 1 in an uniform distribution
+        double getRandomUni(double oldseed);
+        
+        /// creates a sparse matrix
         void createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout);
         
         
         void solve (const vector<double> &startvec);
+        
+        
         void solve ();
         
     private:
@@ -92,6 +108,9 @@ class KonGrad{
         
         /// "known right side"
         vector<double> _b;
+        
+        //random generator
+        default_random_engine _randGenerator;
 };
 
 #endif
