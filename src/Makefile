@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS= -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK
 LDFLAGS= 
-LDLIBS= -L/usr/lib -lpthread -lboost_log -lboost_unit_test_framework
+LDLIBS= -L/usr/lib -L/usr/global/matlab-8.1/bin/glnxa64/ -lpthread -lboost_log -lboost_unit_test_framework
 
 
 all: kongrad.o main.o unittest
