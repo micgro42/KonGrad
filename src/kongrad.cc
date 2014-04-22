@@ -103,14 +103,9 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
 }
 
 
-double KonGrad::getRandomUni(double seed){
-    /// @todo zufallsgenerator so umschreiben, dass der generator nur einmal gestartet wird und danach nur weitere Zahlen geholt werden.
-    // generators for non-zero elements of matrix. for now only diagonal matrices are created and so the position is fixed.
-//     double trueSeed=time(NULL)+seed;
-//     default_random_engine generator(trueSeed);
+double KonGrad::getRandomUni(){
+
     uniform_real_distribution<double> distributiond(0.0,1.0); // to generate the values
-    // uniform_int_distribution<int> distributioni(1,fMatDim); // to generate the position of the nonzero elements
-    
     return distributiond(_randGenerator);
 }
 
@@ -120,16 +115,16 @@ void KonGrad::startRandomGenerator (double seed){
 
 
 
-void KonGrad::createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout){
+void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout){
     for (int i=0;i<dim;++i){
         vector<double> line(dim,0);
-        int numNonZero=3*getRandomUni(seed);
+        int numNonZero=3*getRandomUni();
         for (int j=0;j<numNonZero;++j){
             int posInLine;
             do{
-                posInLine=dim*getRandomUni(seed);
+                posInLine=dim*getRandomUni();
             }while(line.at(posInLine)!=0);
-            line.at(posInLine)=getRandomUni(seed);
+            line.at(posInLine)=getRandomUni();
         }
         matrixout.push_back(line);
     }

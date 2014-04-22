@@ -146,17 +146,17 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
 /// @todo random test case fertig
 BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
     testSLE.startRandomGenerator(10);
-    cout << testSLE.getRandomUni(0)<<endl;
-    cout << testSLE.getRandomUni(0)<<endl;
-    cout << testSLE.getRandomUni(0)<<endl;
-    cout << testSLE.getRandomUni(0)<<endl;
-    cout << testSLE.getRandomUni(0)<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
     double seed=time(NULL);
     cout << "seed " << seed << endl;
-    cout << testSLE.getRandomUni(seed)<<endl;
-    cout << testSLE.getRandomUni(seed)<<endl;
-    cout << testSLE.getRandomUni(seed)<<endl;
-    cout << testSLE.getRandomUni(seed)<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
+    cout << testSLE.getRandomUni()<<endl;
 }
 
 
@@ -165,9 +165,8 @@ BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
     
     vector< vector<double> > matrix;
     int dim = 1000;
-    int seed =0;
     
-    testSLE.createRandomSparseSymmetricMatrix(dim, seed, matrix);
+    testSLE.createRandomSparseSymmetricMatrix(dim, matrix);
     
     BOOST_CHECK_EQUAL(matrix.size(),dim);
     
@@ -180,9 +179,8 @@ BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F){
     
     vector< vector<double> > matrix;
     int dim = 1000;
-    int seed =0;
     
-    testSLE.createRandomSparseSymmetricMatrix(dim, seed, matrix);
+    testSLE.createRandomSparseSymmetricMatrix(dim, matrix);
     int nonZeroTotal=0;
     for (int i=0;i<dim;++i){
         int nonZero=0;

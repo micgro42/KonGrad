@@ -82,10 +82,10 @@ class KonGrad{
         void startRandomGenerator(double seed);
         
         /// returns a random double number between 0 and 1 in an uniform distribution
-        double getRandomUni(double oldseed);
+        double getRandomUni();
         
         /// creates a sparse matrix
-        void createRandomSparseSymmetricMatrix(const int dim, const int seed, vector< vector<double> > &matrixout);
+        void createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout);
         
         
         void solve (const vector<double> &startvec);
