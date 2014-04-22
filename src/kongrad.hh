@@ -87,7 +87,16 @@ class KonGrad{
         /// creates a sparse matrix
         void createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout);
         
-        
+        /**
+         * 
+         * @brief function to solve the system of linear equations
+         * 
+         * @param[in] startvec vector from which to start
+         * 
+         * @param[out] vecout vector to which the result is written. potential content will be deleted.
+         * 
+         * 
+         */
         void solve (const vector<double> &startvec, vector<double> &vecout);
         
         

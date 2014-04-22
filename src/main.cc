@@ -6,7 +6,7 @@
 #include <boost/log/expressions.hpp>
 
 /** 
- * @projecttitle
+ * 
  * 
  * @mainpage CP 3: Konjugierte Gradienten
  * Lösung von linearen Gleichungssystemen mit der Methode der konjugierten Gradienten. Dieses Programm soll entsprechend der CP 3 Vorlesung 2014 geschrieben werden.

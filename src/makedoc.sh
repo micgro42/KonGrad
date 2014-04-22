@@ -16,6 +16,7 @@ then
   sed -i 's/^WARN_LOGFILE.*/WARN_LOGFILE = doxywarnings.log/' Doxyfile
   sed -i 's/^EXCLUDE.*/EXCLUDE = Logging.cc Logging.hh/' Doxyfile
   sed -i 's/^OUTPUT_DIRECTORY.*/OUTPUT_DIRECTORY = ..\/doc/' Doxyfile
+  sed -i 's/^PROJECT_NAME.*/PROJECT_NAME = "KonGrad"/' Doxyfile
 fi
 
 doxygen Doxyfile
