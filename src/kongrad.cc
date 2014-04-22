@@ -204,6 +204,7 @@ void KonGrad::solve (const vector<double> &startvec){
         if( relrest < tol){
             BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
             converged=true;
+            BOOST_LOG_TRIVIAL(info) << "resultvector: " << printVector(xnew);
         }
         
         if ( iternum > 2*_A.size() ){
@@ -223,7 +224,5 @@ void KonGrad::solve (const vector<double> &startvec){
         r=rnew;
         x=xnew;
     }
-    
-    printVector(xnew);
     
 }

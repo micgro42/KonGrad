@@ -149,20 +149,12 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
 }
 
 
-/// @todo random test case fertig
 BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
     testSLE.startRandomGenerator(10);
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    double seed=time(NULL);
-    cout << "seed " << seed << endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
-    cout << testSLE.getRandomUni()<<endl;
+    for (int i=0; i<100000;++i){
+        BOOST_CHECK(testSLE.getRandomUni()!=testSLE.getRandomUni());
+    }
+
 }
 
 
