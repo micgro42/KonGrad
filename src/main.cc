@@ -16,6 +16,8 @@
  *   - gute Dokumentation
  *   - Versionsverwaltung
  *
+ * The repository can be found at https://github.com/micgro42/KonGrad
+ * 
  *   @author Michael Große
  * 
  */
