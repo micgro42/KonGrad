@@ -88,7 +88,7 @@ class KonGrad{
         void createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout);
         
         
-        void solve (const vector<double> &startvec);
+        void solve (const vector<double> &startvec, vector<double> &vecout);
         
         
         void solve ();

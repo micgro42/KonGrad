@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE kongrad_test
 #include <boost/test/unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
@@ -32,7 +33,7 @@ struct F {
 //     F() : i( 0 ) { std::cout << "setup" << std::endl; }
     F(){
         KonGrad testSLE; // SLE = system of linear equations
-        logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::debug);
+        logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
     }
     ~F()          {  }
     
@@ -126,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
 }
 
 
-/// @todo solve1 testcase fertig schreiben
+
 BOOST_FIXTURE_TEST_CASE(solve1, F){
     
     
@@ -143,8 +144,12 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     
     testSLE.setMatrix(matrix);
     testSLE.setb(b);
+    vector<double> resultvector;
+    testSLE.solve(startvector, resultvector);
     
-    testSLE.solve(startvector);
+    for( vector<double>::const_iterator i = resultvector.begin(); i != resultvector.end(); ++i){
+        BOOST_CHECK_CLOSE(*i,1,0.000001); //tolerance 10^-8
+    }
     
 }
 

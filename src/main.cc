@@ -62,7 +62,7 @@ int main(int argc, char** argv){
         init(3);
     }
     
-    const int dim = 3;
+
     vector< vector<double> > A;
     vector<double> line;
     for (int i=0;i<3;++i){
@@ -86,7 +86,8 @@ int main(int argc, char** argv){
     c.push_back(2);
     c.push_back(2);
     c.push_back(2);
-    LGS01.solve(c);
+    vector<double> result;
+    LGS01.solve(c, result);
     
     return 0;
 }

@@ -150,7 +150,7 @@ void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<do
 }
 
 
-void KonGrad::solve (const vector<double> &startvec){
+void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
     vector<double> r;
@@ -223,6 +223,9 @@ void KonGrad::solve (const vector<double> &startvec){
         p=pnew;
         r=rnew;
         x=xnew;
+    }
+    if (converged){
+        vecout=xnew;
     }
     
 }
