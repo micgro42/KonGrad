@@ -1,6 +1,8 @@
 #define BOOST_TEST_MODULE kongrad_test
 #include <boost/test/unit_test.hpp>
+#include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 #include "kongrad.hh"
 #include <vector>
 /**
@@ -22,11 +24,15 @@
  * 
  * 
  */
+
+namespace logging = boost::log;
+
 struct F {
 
 //     F() : i( 0 ) { std::cout << "setup" << std::endl; }
     F(){
         KonGrad testSLE; // SLE = system of linear equations
+        logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::debug);
     }
     ~F()          {  }
     
@@ -129,10 +135,10 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     vector<double> line,b,startvector;
     for (int i=0;i<10;++i){
         line.assign(10,0);
-        line.at(i)=1;
+        line.at(i)=i+1;
         matrix.push_back(line);
-        b.push_back(i);
-        startvector.push_back(0);
+        b.push_back(i+1);
+        startvector.push_back(2);
     }
     
     testSLE.setMatrix(matrix);

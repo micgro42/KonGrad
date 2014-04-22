@@ -36,12 +36,14 @@ void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<
     const int matrixlineDim = matrix.size();
     assert(vecinDim==matrixlineDim);
     vecout.assign(vecinDim,0);
+    BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecin " << printVector(vecin);
     for (int i=0;i<vecinDim;++i){
         for (int j=0;j<vecinDim;++j){
             vecout.at(j)+=matrix.at(i).at(j)*vecin.at(j);
         }
         
     }
+    BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
 
 void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
@@ -79,13 +81,30 @@ void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vect
     }
 }
 
-void KonGrad::printVector (const vector<double> &vec){
+int KonGrad::printVector (const vector<double> &vec){
     cout << "vector ";
     for( vector<double>::const_iterator i = vec.begin(); i != vec.end(); ++i){
         cout << *i << ' ';
     }
     cout << endl;
+    return 0;
 }
+
+int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
+    // this prints out the matrix if the size is smaller than 20.
+    bool isSmallerThan20 = ( _A.size() < 20 );
+    if ( isSmallerThan20 ){
+        for ( unsigned int i = 0; i<_A.size(); ++i){
+            for( vector<double>::const_iterator j = _A.at(i).begin(); j != _A.at(i).end(); ++j){
+                cout << *j << ' ';
+            }
+            cout << endl;
+        }
+    }
+    return !isSmallerThan20;
+}
+
+
 
 void KonGrad::solve (){
     ///@todo start mit Nullvektor einbauen
@@ -145,33 +164,59 @@ void KonGrad::solve (const vector<double> &startvec){
     //temporäre Vektoren
     vector<double> tmpvec;
     
+    BOOST_LOG_TRIVIAL(debug) << "solve: start vector " << printVector(startvec);
+    BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
+    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
+    
     matrixVector(_A,startvec,tmpvec);
     diffVector(_b,tmpvec, r);
+    BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
         cout << "done" << endl;
         return; /// @todo write better exit at start
     }
     p=r;
+    BOOST_LOG_TRIVIAL(trace) << "solve: p " << printVector(p);
     /// @todo weitere rechnungen in dezidierten Funktionen zusammenfassen
     bool converged=false;
-    int iternum=0;
+    unsigned int iternum=0;
     while(!converged){
         double alpha;
         double beta;
+        double relrest;
         ++iternum;
         matrixVector(_A,p,s);
+        BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
+        
         alpha=skalarProd(p,r)/skalarProd(p,s);
+        BOOST_LOG_TRIVIAL(trace) << "solve: alpha " << alpha;
+        
         skalarVector(alpha,p,tmpvec);
         sumVector(x,tmpvec,xnew);
+        BOOST_LOG_TRIVIAL(trace) << "solve: xnew " << printVector(xnew);
+        
         skalarVector(alpha,s,tmpvec);
         diffVector(r,tmpvec,rnew);
+        BOOST_LOG_TRIVIAL(trace) << "solve: rnew " << printVector(rnew);
         
-        if(sqrt(skalarProd(rnew,rnew))/bnorm < tol){
+        relrest=sqrt(skalarProd(rnew,rnew))/bnorm;
+        BOOST_LOG_TRIVIAL(debug) << "relrest: " << relrest;
+        if( relrest < tol){
             BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
             converged=true;
         }
         
-        beta=sqrt(skalarProd(rnew,rnew))/sqrt(skalarProd(r,r));
+        if ( iternum > 2*_A.size() ){
+            BOOST_LOG_TRIVIAL(error) << "The algorithm did not converge. Aborted. Iterations: " << iternum;
+            break;
+        }
+        
+        BOOST_LOG_TRIVIAL(debug) << "resultvector x at iteration " << iternum << ": " << printVector(xnew);
+        
+        beta=skalarProd(rnew,rnew)/skalarProd(r,r);
+        BOOST_LOG_TRIVIAL(trace) << "solve: beta " << beta;
+        
+        
         skalarVector(beta,p,tmpvec);
         sumVector(rnew,tmpvec,pnew);
         p=pnew;

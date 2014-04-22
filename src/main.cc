@@ -56,15 +56,18 @@ void init(const int loglevel){
 }
 
 int main(int argc, char** argv){
-    /// @todo änderung des loglevel vim aufrufparameter einbauen
-    init(3);
+    if (argc > 1){
+        init(atoi(argv[1]));
+    }else{
+        init(3);
+    }
     
-    //erschaffe 2*Einheitsmatrix 3x3
+    const int dim = 3;
     vector< vector<double> > A;
     vector<double> line;
     for (int i=0;i<3;++i){
         line.assign(3,0);
-        line.at(i)=2;
+        line.at(i)=i+1;
         A.push_back(line);
     }
     
@@ -80,9 +83,9 @@ int main(int argc, char** argv){
     
     
     vector<double> c;
-    c.push_back(1);
-    c.push_back(5);
-    c.push_back(1);
+    c.push_back(2);
+    c.push_back(2);
+    c.push_back(2);
     LGS01.solve(c);
     
     return 0;

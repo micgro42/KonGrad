@@ -98,18 +98,29 @@ class KonGrad{
         /**
          * @brief print the vector to stdout
          */
-        void printVector (const vector<double> &vec);
+        int printVector (const vector<double> &vec);
+        
+        /**
+         * @brief print the matrix to stdout if the dim is < 20
+         */
+        int printMatrix (const  vector< vector<double> > &matrix);
         
         
         
         
-        /// (sparse) matrix
+        /**
+         *
+         *@brief a (sparse) matrix
+         *
+         * @todo make a new class for A
+         * 
+         */
         vector<vector<double> > _A;
         
         /// "known right side"
         vector<double> _b;
         
-        //random generator
+        ///random generator
         default_random_engine _randGenerator;
 };
 
