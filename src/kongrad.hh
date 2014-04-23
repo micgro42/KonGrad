@@ -5,7 +5,16 @@
 
 using namespace std;
 
-///@author Michael Große
+
+/**
+ * @file kongrad.hh
+ * 
+ * @brief header for the KonGrad class
+ * 
+ * 
+ */
+
+
 
 /**
  * @class KonGrad

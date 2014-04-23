@@ -22,7 +22,15 @@
  * 
  */
 
-
+/**
+ * 
+ * @file main.cc
+ * 
+ * @brief contains the main routine to call/test the conjugate gradient algorithm.
+ * 
+ * 
+ * 
+ */
 
 
 namespace logging = boost::log;

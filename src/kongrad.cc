@@ -5,6 +5,16 @@
 #include <cmath>
 #include <boost/log/trivial.hpp>
 
+/**
+ * @file kongrad.cc
+ * 
+ * @brief sourcecode for the KonGrad class
+ * 
+ * 
+ */
+
+
+
 
 KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
 }
