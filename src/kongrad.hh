@@ -99,6 +99,15 @@ class KonGrad{
          */
         void solve (const vector<double> &startvec, vector<double> &vecout);
         
+        /**
+         * @brief solve with option to handover the matrix and known right side to the solve function
+         * 
+         * 
+         * 
+         * 
+         */
+        void solve (const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
+        
         
         void solve ();
         

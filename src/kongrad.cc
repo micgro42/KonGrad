@@ -149,6 +149,12 @@ void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<do
     }
 }
 
+void KonGrad::solve (const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
+    _A=matrixin;
+    _b=knownRightSide;
+    solve(startvec, vecout);
+}
+
 
 void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
