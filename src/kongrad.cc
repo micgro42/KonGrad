@@ -92,9 +92,12 @@ void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vect
 }
 
 int KonGrad::printVector (const vector<double> &vec){
-    cout << "vector ";
-    for( vector<double>::const_iterator i = vec.begin(); i != vec.end(); ++i){
-        cout << *i << ' ';
+    // this prints out the vector if the size is smaller than 20.
+    bool isSmallerThan20 = ( vec.size() < 20 );
+    if ( isSmallerThan20 ){
+        for( vector<double>::const_iterator i = vec.begin(); i != vec.end(); ++i){
+            cout << *i << ' ';
+        }
     }
     cout << endl;
     return 0;
@@ -102,10 +105,10 @@ int KonGrad::printVector (const vector<double> &vec){
 
 int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
     // this prints out the matrix if the size is smaller than 20.
-    bool isSmallerThan20 = ( _A.size() < 20 );
+    bool isSmallerThan20 = ( matrix.size() < 20 );
     if ( isSmallerThan20 ){
-        for ( unsigned int i = 0; i<_A.size(); ++i){
-            for( vector<double>::const_iterator j = _A.at(i).begin(); j != _A.at(i).end(); ++j){
+        for ( unsigned int i = 0; i<matrix.size(); ++i){
+            for( vector<double>::const_iterator j = matrix.at(i).begin(); j != matrix.at(i).end(); ++j){
                 cout << *j << ' ';
             }
             cout << endl;
