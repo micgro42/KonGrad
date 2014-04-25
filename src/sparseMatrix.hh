@@ -50,10 +50,20 @@ class sparseMatrix{
         /// make a matrix is symmetric
         void makeMatrixSymmetric();
         
+        /**
+         * @brief print the vector to stdout if the dim is < 20
+         */
+        int printVector (const vector<double> &vec);
         
+        /**
+         * @brief print the matrix to stdout if the dim is < 20
+         */
+        int printMatrix ();
     
     
     private:
+        
+        
         vector<vector<double> > _A;
 };
 
