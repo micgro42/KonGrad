@@ -15,7 +15,7 @@
 
 
 
-KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
+KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : sparseMatrix(matrix), _b(vec) {
 }
 
 KonGrad::KonGrad(){
@@ -34,11 +34,11 @@ KonGrad::KonGrad(){
 
 void KonGrad::testmv(const vector<double> vecin){
     vector<double> vecout;
-    KonGrad::matrixVector(_A,vecin, vecout);
+    KonGrad::matrixVector(vecin, vecout);
 }
 
 
-
+/*
 void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout){
     //check if dimensions are correct
     const int vecinDim = vecin.size();
@@ -54,6 +54,7 @@ void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<
     }
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
+*/
 
 void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
@@ -90,6 +91,7 @@ void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vect
     }
 }
 
+/*
 int KonGrad::printVector (const vector<double> &vec){
     // this prints out the vector if the size is smaller than 20.
     bool isSmallerThan20 = ( vec.size() < 20 );
@@ -101,7 +103,9 @@ int KonGrad::printVector (const vector<double> &vec){
     cout << endl;
     return 0;
 }
+*/
 
+/*
 int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
     // this prints out the matrix if the size is smaller than 20.
     bool isSmallerThan20 = ( matrix.size() < 20 );
@@ -114,7 +118,7 @@ int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
         }
     }
     return !isSmallerThan20;
-}
+}*/
 
 
 
@@ -184,9 +188,9 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     
     BOOST_LOG_TRIVIAL(debug) << "solve: start vector " << printVector(startvec);
     BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
-    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
+    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix();
     
-    matrixVector(_A,startvec,tmpvec);
+    matrixVector(startvec,tmpvec);
     diffVector(_b,tmpvec, r);
     BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
@@ -203,7 +207,7 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
         double beta;
         double relrest;
         ++iternum;
-        matrixVector(_A,p,s);
+        matrixVector(p,s);
         BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
         
         alpha=skalarProd(p,r)/skalarProd(p,s);

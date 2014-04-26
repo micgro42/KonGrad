@@ -2,6 +2,7 @@
 #define KONGRAD_HH
 #include <vector>
 #include <random>
+#include "sparseMatrix.hh"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ using namespace std;
  * @brief Class to store and solve linear system of equations
  * 
  */
-class KonGrad{
+class KonGrad: public sparseMatrix {
     public:
         ///The Constructor
         KonGrad(vector<vector<double> > Matrix, vector<double> vec);
@@ -78,13 +79,13 @@ class KonGrad{
          * @param[out] vecout the content of this vector is removed and the new vector is written to it
          * 
          */
-        void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
+//         void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
         
         /// check if a matrix is symmetric
-        bool matrixIsSymmetric(const vector< vector<double> > &matrix);
+//         bool matrixIsSymmetric(const vector< vector<double> > &matrix);
         
         /// make a matrix is symmetric
-        void makeMatrixSymmetric(const vector< vector<double> > &matrixin, vector< vector<double> > &matrixout);
+//         void makeMatrixSymmetric(const vector< vector<double> > &matrixin, vector< vector<double> > &matrixout);
         
         
         ///starts random generator
@@ -125,12 +126,12 @@ class KonGrad{
         /**
          * @brief print the vector to stdout
          */
-        int printVector (const vector<double> &vec);
+//         int printVector (const vector<double> &vec);
         
         /**
          * @brief print the matrix to stdout if the dim is < 20
          */
-        int printMatrix (const  vector< vector<double> > &matrix);
+//         int printMatrix (const  vector< vector<double> > &matrix);
         
         
         
@@ -142,7 +143,7 @@ class KonGrad{
          * @todo make a new class for A
          * 
          */
-        vector<vector<double> > _A;
+//         vector<vector<double> > _A;
         
         /// "known right side"
         vector<double> _b;

@@ -61,7 +61,7 @@ class sparseMatrix{
         int printMatrix ();
     
     
-    private:
+    protected:
         
         
         vector<vector<double> > _A;
