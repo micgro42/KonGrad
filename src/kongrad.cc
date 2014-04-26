@@ -1,6 +1,5 @@
 #include "kongrad.hh"
 #include <vector>
-#include <iostream>
 #include <cassert>
 #include <cmath>
 #include <boost/log/trivial.hpp>

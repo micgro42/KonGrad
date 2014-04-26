@@ -6,7 +6,9 @@
       "*.hh",
       "*.sh",
       "Doxyfile",
-      "Makefile"
+      "Makefile",
+      ".kateproject",
+      "README"
     ],  "recursive": 1 } ]
   , "build": {
       "directory": "src"
