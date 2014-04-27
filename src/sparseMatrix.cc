@@ -37,6 +37,10 @@ void sparseMatrix::matrixVector(const vector<double> &vecin, vector<double> &vec
 }
 
 
+unsigned int sparseMatrix::size(){
+    return _A.size();
+}
+
 int sparseMatrix::printVector (const vector<double> &vec){
     // this prints out the vector if the size is smaller than 20.
     bool isSmallerThan20 = ( vec.size() < 20 );

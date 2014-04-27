@@ -2,6 +2,7 @@
 #define KONGRAD_HH
 #include <vector>
 #include <random>
+#include "sparseMatrix.hh"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ class KonGrad{
         void setMatrix(const vector< vector<double> > &matrix) {_A=matrix;};
         
         /// set the Matrix of the object
-        void getMatrix(vector< vector<double> > &matrix) {matrix=_A;};
+        void getMatrix(vector< vector<double> > &matrix) {_A.getMatrix(matrix);};
         
         /// set the "known right side"
         void setb(const vector<double> &bvec) {_b=bvec;};
@@ -142,7 +143,7 @@ class KonGrad{
          * @todo make a new class for A
          * 
          */
-        vector<vector<double> > _A;
+        sparseMatrix _A;
         
         /// "known right side"
         vector<double> _b;

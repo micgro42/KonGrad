@@ -20,11 +20,14 @@ KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matri
 
 KonGrad::KonGrad(){
     vector<double> line;
+    vector< vector<double> > matrix;
     for (int i=0;i<3;++i){
         line.assign(3,0);
         line.at(i)=1;
-        _A.push_back(line);
+        matrix.push_back(line);
     }
+    
+    _A.setMatrix(matrix);
     
     _b.assign(3,0);
 }
@@ -34,7 +37,7 @@ KonGrad::KonGrad(){
 
 void KonGrad::testmv(const vector<double> vecin){
     vector<double> vecout;
-    KonGrad::matrixVector(_A,vecin, vecout);
+    _A.matrixVector(vecin, vecout);
 }
 
 
@@ -184,9 +187,9 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     
     BOOST_LOG_TRIVIAL(debug) << "solve: start vector " << printVector(startvec);
     BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
-    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
+    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << _A.printMatrix();
     
-    matrixVector(_A,startvec,tmpvec);
+    _A.matrixVector(startvec,tmpvec);
     diffVector(_b,tmpvec, r);
     BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
@@ -203,7 +206,7 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
         double beta;
         double relrest;
         ++iternum;
-        matrixVector(_A,p,s);
+        _A.matrixVector(p,s);
         BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
         
         alpha=skalarProd(p,r)/skalarProd(p,s);

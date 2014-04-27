@@ -28,6 +28,10 @@ class sparseMatrix{
     
         sparseMatrix();
         
+        unsigned int size();
+        
+        void pushLine(vector<double> &line);
+        
         /// set the Matrix of the system of linear equations
         void setMatrix(const vector< vector<double> > &matrix) {_A=matrix;};
         
