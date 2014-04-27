@@ -79,13 +79,8 @@ class KonGrad{
          * @param[out] vecout the content of this vector is removed and the new vector is written to it
          * 
          */
-        void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
+         void matrixVector(const vector<double> &vecin, vector<double> &vecout);
         
-        /// check if a matrix is symmetric
-        bool matrixIsSymmetric(const vector< vector<double> > &matrix);
-        
-        /// make a matrix is symmetric
-        void makeMatrixSymmetric(const vector< vector<double> > &matrixin, vector< vector<double> > &matrixout);
         
         
         ///starts random generator
@@ -131,7 +126,7 @@ class KonGrad{
         /**
          * @brief print the matrix to stdout if the dim is < 20
          */
-        int printMatrix (const  vector< vector<double> > &matrix);
+        int printMatrix ();
         
         
         

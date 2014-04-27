@@ -23,7 +23,7 @@ using namespace std;
  */
 class sparseMatrix{
     public:
-    
+        
         sparseMatrix(vector<vector<double> > matrix);
     
         sparseMatrix();

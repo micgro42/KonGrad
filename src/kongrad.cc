@@ -42,20 +42,8 @@ void KonGrad::testmv(const vector<double> vecin){
 
 
 
-void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout){
-    //check if dimensions are correct
-    const int vecinDim = vecin.size();
-    const int matrixlineDim = matrix.size();
-    assert(vecinDim==matrixlineDim);
-    vecout.assign(vecinDim,0);
-    BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecin " << printVector(vecin);
-    for (int i=0;i<vecinDim;++i){
-        for (int j=0;j<vecinDim;++j){
-            vecout.at(j)+=matrix.at(i).at(j)*vecin.at(j);
-        }
-        
-    }
-    BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
+void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
+    _A.matrixVector(vecin, vecout);
 }
 
 void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
@@ -94,29 +82,11 @@ void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vect
 }
 
 int KonGrad::printVector (const vector<double> &vec){
-    // this prints out the vector if the size is smaller than 20.
-    bool isSmallerThan20 = ( vec.size() < 20 );
-    if ( isSmallerThan20 ){
-        for( vector<double>::const_iterator i = vec.begin(); i != vec.end(); ++i){
-            cout << *i << ' ';
-        }
-    }
-    cout << endl;
-    return 0;
+    return _A.printVector(vec);
 }
 
-int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
-    // this prints out the matrix if the size is smaller than 20.
-    bool isSmallerThan20 = ( matrix.size() < 20 );
-    if ( isSmallerThan20 ){
-        for ( unsigned int i = 0; i<matrix.size(); ++i){
-            for( vector<double>::const_iterator j = matrix.at(i).begin(); j != matrix.at(i).end(); ++j){
-                cout << *j << ' ';
-            }
-            cout << endl;
-        }
-    }
-    return !isSmallerThan20;
+int KonGrad::printMatrix (){
+    return _A.printMatrix();
 }
 
 

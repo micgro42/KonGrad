@@ -116,8 +116,8 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
         line.at(i)=i;
         matrix.push_back(line);
     }
-    
-    testSLE.matrixVector(matrix, vecin, vecout);
+    testSLE.setMatrix(matrix);
+    testSLE.matrixVector(vecin, vecout);
     
     for (int i=0;i<3;++i){
         BOOST_CHECK_EQUAL(vecout.at(i),i);
