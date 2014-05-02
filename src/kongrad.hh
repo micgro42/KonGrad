@@ -53,24 +53,48 @@ class KonGrad{
         /**
          * @brief create the skalar product of two vectors
          * 
+         * This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( skalarProd, F )
+         *
          */
         double skalarProd(const vector<double> &vecin1, const vector<double> &vecin2);
         
         
         /**
          * @brief subtracts one vector from another and writes the result to a third
+         *
+         * This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( diffVector, F )
          */
         void diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
         
-        /// sum of two vectors
+        /**
+         * @brief sum of two vectors
+         *
+         * This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( sumVector, F )
+         *
+         */
         void sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout);
         
-        ///skalar times vector
+        /**
+         * @brief multiplies a vector with a scalar
+         *
+         * This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( skalarVector, F )
+         *
+         * @param[in] alpha
+         * @param[in] vecin
+         * @param[out] vecout
+         */
         void skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout);
         
         /**
          * @brief Mulitply a matrix and a vector
          * 
+         * @details This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( matrixVector, F )
+         *
          * @param[in] matrix this vector remains unchanged
          * 
          * @param[in] vecin this vector remains unchanged
@@ -80,6 +104,15 @@ class KonGrad{
          */
         void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
         
+
+        /**
+         *
+         *
+         *
+         * @param[in] mass mass parameter for \f$A=\Delta + m \f$
+         * @param[in] vecin
+         * @param[out] vecout
+         */
         void matrixVectorLaplace(const double mass, const vector<double> &vecin, vector<double> &vecout);
 
         /// check if a matrix is symmetric
@@ -92,16 +125,40 @@ class KonGrad{
         ///starts random generator
         void startRandomGenerator(double seed);
         
-        /// returns a random double number between 0 and 1 in an uniform distribution
+        /**
+         *
+         * @brief returns a random double number between 0 and 1 in an uniform distribution
+         *
+         * @details This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( getRandomUni, F )
+         *
+         * @return
+         *
+         */
         double getRandomUni();
         
-        /// creates a sparse matrix
+
+        /**
+         *
+         * @brief creates a sparse matrix
+         *
+         * @details This function is tested with the following unittest(s):
+         *    - BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F)
+         *    - BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F)
+         *
+         * @param dim
+         * @param matrixout
+         */
         void createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout);
         
         /**
          * 
          * @brief function to solve the system of linear equations
          * 
+         *
+         * @details This function is tested with the following unittest(s):
+         *    - BOOST_FIXTURE_TEST_CASE(solve1, F)
+         *
          * @param[in] startvec vector from which to start
          * 
          * @param[out] vecout vector to which the result is written. potential content will be deleted.

@@ -74,8 +74,7 @@ void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vec
     vecout.clear();
     
     for (int i=0;i<vecin1Dim;++i){
-    	const double tempvar =vecin1.at(i)-vecin2.at(i);
-        vecout.push_back(tempvar);
+        vecout.push_back(vecin1.at(i)-vecin2.at(i));
     }
 }
 

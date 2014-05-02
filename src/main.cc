@@ -19,6 +19,8 @@
  * The repository can be found at https://github.com/micgro42/KonGrad
  * 
  *   @author Michael Große
+ *
+ * The website for the course can be found at: http://www-com.physik.hu-berlin.de/~bunk/cp3/
  * 
  */
 

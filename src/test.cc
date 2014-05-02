@@ -9,7 +9,7 @@
 /**
  * @file test.cc
  * 
- * @brief this file contains the unit test suite for the conjugate gradiant project
+ * @brief this file contains the unit test suite for the conjugate gradiant project, specifically for the functions of the KonGrad class
  * 
  * 
  * 
@@ -43,7 +43,11 @@ struct F {
 
 BOOST_AUTO_TEST_SUITE (kongrad_test) 
 
-
+/**
+ * test if that the skalar product of (2;2) and (2;2) is indeed 8.
+ *
+ * This unittest tests the function KonGrad::skalarProd
+ */
 BOOST_FIXTURE_TEST_CASE( skalarProd, F ){
     
     vector<double> b(2,2);
@@ -51,6 +55,12 @@ BOOST_FIXTURE_TEST_CASE( skalarProd, F ){
     BOOST_CHECK_EQUAL( testSLE.skalarProd(b,b) , 8 );
 }
 
+
+/**
+ * test if some small integers are subtracted from each other correctly.
+ *
+ * This unittest tests the function KonGrad::diffVector
+ */
 BOOST_FIXTURE_TEST_CASE( diffVector, F ){
     
     vector<double> a,b,diff;
@@ -69,6 +79,12 @@ BOOST_FIXTURE_TEST_CASE( diffVector, F ){
     }
 }
 
+
+/**
+ * test if some small integers are summed correctly.
+ *
+ * This unittest tests the function KonGrad::sumVector
+ */
 BOOST_FIXTURE_TEST_CASE( sumVector, F ){
     
     vector<double> a,b,sum;
@@ -87,6 +103,12 @@ BOOST_FIXTURE_TEST_CASE( sumVector, F ){
     }
 }
 
+
+/**
+ * test if a vector of precise doubles is correctly multplied by another double
+ *
+ * This unittest tests the function KonGrad::skalarVector .
+ */
 BOOST_FIXTURE_TEST_CASE( skalarVector, F ){
     vector<double> vecin,prod;
     double scalar=2.5;
@@ -104,6 +126,12 @@ BOOST_FIXTURE_TEST_CASE( skalarVector, F ){
     }
 }
 
+
+/**
+ * @brief test that a diagonal matrix and a vector are multiplied correctly
+ *
+ * @details This unittest tests the function KonGrad::matrixVector
+ */
 BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
     
     vector<double> vecin(3,1);
@@ -127,7 +155,11 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
 }
 
 
-
+/**
+ * @brief test that a diagonal matrix and a vector are multiplied correctly
+ *
+ * @details This unittest tests the function KonGrad::solve(const vector<double> &startvec, vector<double> &vecout)
+ */
 BOOST_FIXTURE_TEST_CASE(solve1, F){
     
     
@@ -153,7 +185,11 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     
 }
 
-
+/**
+ * @brief test that a two consecutive random numbers are not the same
+ *
+ * @details This unittest tests the function KonGrad::getRandomUni
+ */
 BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
     testSLE.startRandomGenerator(10);
     for (int i=0; i<100000;++i){
@@ -162,7 +198,11 @@ BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
 
 }
 
-
+/**
+ * @brief test that a the created matrix has the dimensions it is supposed to have.
+ *
+ * @details This unittest tests the function KonGrad::createRandomSparseSymmetricMatrix
+ */
 BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
     
     
@@ -178,6 +218,11 @@ BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
     }
 }
 
+/**
+ * @brief test that a the created matrix has at most 2 non-zero entries per row
+ *
+ * @details This unittest tests the function KonGrad::createRandomSparseSymmetricMatrix
+ */
 BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F){
     
     vector< vector<double> > matrix;
