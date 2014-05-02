@@ -60,6 +60,7 @@ void init(const int loglevel){
             default:
                 BOOST_LOG_TRIVIAL(fatal) << "first parameter must be int 0..5 or empty";
                 assert(false);
+                break;
         }
 }
 

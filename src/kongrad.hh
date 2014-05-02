@@ -80,6 +80,8 @@ class KonGrad{
          */
         void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
         
+        void matrixVectorLaplace(const double mass, const vector<double> &vecin, vector<double> &vecout);
+
         /// check if a matrix is symmetric
         bool matrixIsSymmetric(const vector< vector<double> > &matrix);
         

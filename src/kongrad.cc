@@ -1,5 +1,6 @@
 #include "kongrad.hh"
 #include <vector>
+#include <random>
 #include <cassert>
 #include <cmath>
 #include <boost/log/trivial.hpp>
@@ -55,6 +56,16 @@ void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
 
+
+void KonGrad::matrixVectorLaplace(const double mass, const vector<double> &vecin, vector<double> &vecout){
+	const int vecinDim = vecin.size();
+	vecout.assign(vecinDim,0);
+	for (int i=0; i<vecinDim;++i){
+
+
+	}
+}
+
 void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
@@ -63,7 +74,8 @@ void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vec
     vecout.clear();
     
     for (int i=0;i<vecin1Dim;++i){
-        vecout.push_back(vecin1.at(i)-vecin2.at(i));
+    	const double tempvar =vecin1.at(i)-vecin2.at(i);
+        vecout.push_back(tempvar);
     }
 }
 
