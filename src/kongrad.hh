@@ -42,6 +42,13 @@ class KonGrad{
         /// set the "known right side"
         void getb(vector<double> &bvec) {bvec=_b;};
         
+
+        /// get the _mass member of the instance
+        double getmass(){ return _mass; };
+
+        /// set the _mass parameter
+        void setmasse(double m){_mass=m;};
+
         
         
         /**
@@ -109,11 +116,10 @@ class KonGrad{
          *
          *
          *
-         * @param[in] mass mass parameter for \f$A=\Delta + m \f$
          * @param[in] vecin
          * @param[out] vecout
          */
-        void matrixVectorLaplace(const double mass, const vector<double> &vecin, vector<double> &vecout);
+        void matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout);
 
         /// check if a matrix is symmetric
         bool matrixIsSymmetric(const vector< vector<double> > &matrix);
@@ -206,6 +212,9 @@ class KonGrad{
         /// "known right side"
         vector<double> _b;
         
+        /// mass for periodic conditios: \f$ A=\Delta + m \f$
+        double _mass;
+
         ///random generator
         default_random_engine _randGenerator;
 };

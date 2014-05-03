@@ -17,6 +17,7 @@
 
 
 KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
+    _mass=0.1;
 }
 
 KonGrad::KonGrad(){
@@ -26,7 +27,7 @@ KonGrad::KonGrad(){
         line.at(i)=1;
         _A.push_back(line);
     }
-    
+    _mass=0.1;
     _b.assign(3,0);
 }
 
@@ -56,12 +57,22 @@ void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
 
-
-void KonGrad::matrixVectorLaplace(const double mass, const vector<double> &vecin, vector<double> &vecout){
+/**
+ *
+ * @test this function still needs unittests
+ *
+ * @bug add _mass*_mass factor to outer loop
+ *
+ *
+ */
+void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
 	const int vecinDim = vecin.size();
 	vecout.assign(vecinDim,0);
 	for (int i=0; i<vecinDim;++i){
-
+        vecout.at(i)=2*ndim*vecin.at(i);
+        for (int k=1;k<=ndim;++k){
+        	vecout.at(i)=-(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i]));
+        }
 
 	}
 }

@@ -1,4 +1,5 @@
 #include "kongrad.hh"
+#include "global.h"
 #include <iostream>
 #include <cassert>
 #include <boost/log/core.hpp>
