@@ -135,10 +135,6 @@ int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
 
 
 
-void KonGrad::solve (){
-    ///@todo start mit Nullvektor einbauen
-}
-
 double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &vecin2){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
@@ -178,14 +174,14 @@ void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<do
     }
 }
 
-void KonGrad::solve (const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
+void KonGrad::solve (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
     _A=matrixin;
     _b=knownRightSide;
-    solve(startvec, vecout);
+    solve(method, startvec, vecout);
 }
 
 
-void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
+void KonGrad::solve (const string method, const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
     vector<double> r;
@@ -203,11 +199,12 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
     BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
     
-    matrixVector(startvec,tmpvec);
+    applyA(method,startvec,tmpvec);
     diffVector(_b,tmpvec, r);
     BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
         cout << "done" << endl;
+        vecout=startvec;
         return; /// @todo write better exit at start
     }
     p=r;
@@ -220,7 +217,7 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
         double beta;
         double relrest;
         ++iternum;
-        matrixVector(p,s);
+        applyA(method,p,s);
         BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
         
         alpha=skalarProd(p,r)/skalarProd(p,s);

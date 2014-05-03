@@ -44,8 +44,8 @@ struct F {
 
 };
 
-struct Lorenzfield {
-	Lorenzfield(){
+struct scalarfield {
+	scalarfield(){
 		KonGrad testSLE; // SLE = system of linear equations
 		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::trace);
 		ndim=2;
@@ -56,7 +56,7 @@ struct Lorenzfield {
 	    geom_pbc();
 
 	}
-	~Lorenzfield() {   }
+	~scalarfield() {   }
 
 	KonGrad testSLE;
 };
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_SUITE (kongrad_test)
  *
  * This unittest tests the function KonGrad::matrixVectorLaplace
  */
-BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, Lorenzfield ){
+BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield ){
 	vector <double> vecin;
 	vector <double> vecout;
 	testSLE.setmass(0);
@@ -232,7 +232,7 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
  *
  * @details This unittest tests the function KonGrad::solve(const vector<double> &startvec, vector<double> &vecout)
  */
-BOOST_FIXTURE_TEST_CASE(solve1, F){
+BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F){
     
     
     //create 10x10 unit matrix
@@ -249,13 +249,111 @@ BOOST_FIXTURE_TEST_CASE(solve1, F){
     testSLE.setMatrix(matrix);
     testSLE.setb(b);
     vector<double> resultvector;
-    testSLE.solve(startvector, resultvector);
+    testSLE.solve("sparseMatrix",startvector, resultvector);
     
     for( vector<double>::const_iterator i = resultvector.begin(); i != resultvector.end(); ++i){
         BOOST_CHECK_CLOSE(*i,1,0.000001); //tolerance 10^-8
     }
     
 }
+
+
+/**
+ *
+ *
+ * @details this test goes the opposite direction of the test BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield )
+ * the startvector is the "known right side"
+ */
+BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
+	vector <double> b,startvector,resultvector;
+	testSLE.setmass(0);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(4);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	testSLE.setb(b);
+	testSLE.solve("Laplace",b, resultvector);
+	BOOST_CHECK_EQUAL(resultvector.at(0),1);
+	BOOST_CHECK_EQUAL(resultvector.at(1),2);
+	BOOST_CHECK_EQUAL(resultvector.at(2),1);
+	BOOST_CHECK_EQUAL(resultvector.at(3),2);
+	BOOST_CHECK_EQUAL(resultvector.at(4),3);
+	BOOST_CHECK_EQUAL(resultvector.at(5),2);
+	BOOST_CHECK_EQUAL(resultvector.at(6),1);
+	BOOST_CHECK_EQUAL(resultvector.at(7),2);
+	BOOST_CHECK_EQUAL(resultvector.at(8),1);
+}
+
+
+/// the startvector is always the same number
+BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
+	vector <double> b,startvector,resultvector;
+	testSLE.setmass(0);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(4);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	testSLE.setb(b);
+	startvector.assign(9,5);
+	testSLE.solve("Laplace",startvector, resultvector);
+	BOOST_CHECK_EQUAL(resultvector.at(0),1);
+	BOOST_CHECK_EQUAL(resultvector.at(1),2);
+	BOOST_CHECK_EQUAL(resultvector.at(2),1);
+	BOOST_CHECK_EQUAL(resultvector.at(3),2);
+	BOOST_CHECK_EQUAL(resultvector.at(4),3);
+	BOOST_CHECK_EQUAL(resultvector.at(5),2);
+	BOOST_CHECK_EQUAL(resultvector.at(6),1);
+	BOOST_CHECK_EQUAL(resultvector.at(7),2);
+	BOOST_CHECK_EQUAL(resultvector.at(8),1);
+}
+
+
+///this unittest tests if solve correctly returns the start vector if it already solves the problem.
+BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield){
+	vector <double> b,startvector,resultvector;
+	testSLE.setmass(0);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(4);
+	b.push_back(1);
+	b.push_back(-2);
+	b.push_back(1);
+	b.push_back(-2);
+	testSLE.setb(b);
+	startvector.push_back(1);
+	startvector.push_back(2);
+	startvector.push_back(1);
+	startvector.push_back(2);
+	startvector.push_back(3);
+	startvector.push_back(2);
+	startvector.push_back(1);
+	startvector.push_back(2);
+	startvector.push_back(1);
+	testSLE.solve("Laplace",startvector, resultvector);
+	BOOST_CHECK_EQUAL(resultvector.at(0),1);
+	BOOST_CHECK_EQUAL(resultvector.at(1),2);
+	BOOST_CHECK_EQUAL(resultvector.at(2),1);
+	BOOST_CHECK_EQUAL(resultvector.at(3),2);
+	BOOST_CHECK_EQUAL(resultvector.at(4),3);
+	BOOST_CHECK_EQUAL(resultvector.at(5),2);
+	BOOST_CHECK_EQUAL(resultvector.at(6),1);
+	BOOST_CHECK_EQUAL(resultvector.at(7),2);
+	BOOST_CHECK_EQUAL(resultvector.at(8),1);
+}
+
+
 
 /**
  * @brief test that a two consecutive random numbers are not the same

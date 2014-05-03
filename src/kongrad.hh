@@ -116,7 +116,7 @@ class KonGrad{
          * @brief apply the laplaceoperator and a mass to a field
          *
          * @details This function is tested with the following unittest(s):
-         *   - BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, Lorenzfield )
+         *   - BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield )
          *
          * @param[in] vecin
          * @param[out] vecout
@@ -165,7 +165,10 @@ class KonGrad{
          * 
          *
          * @details This function is tested with the following unittest(s):
-         *    - BOOST_FIXTURE_TEST_CASE(solve1, F)
+         *    - BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F)
+         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield)
+         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield)
+         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield)
          *
          * @param[in] startvec vector from which to start
          * 
@@ -173,7 +176,7 @@ class KonGrad{
          * 
          * 
          */
-        void solve (const vector<double> &startvec, vector<double> &vecout);
+        void solve (const string method, const vector<double> &startvec, vector<double> &vecout);
         
         /**
          * @brief solve with option to handover the matrix and known right side to the solve function
@@ -182,12 +185,9 @@ class KonGrad{
          * 
          * 
          */
-        void solve (const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
+        void solve (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
         
-        
-        void solve ();
-        
-        /**
+       /**
         * @brief print the vector to stdout
         */
         int printVector (const vector<double> &vec);
