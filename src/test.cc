@@ -5,11 +5,14 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include "kongrad.hh"
+#define DEFINE_GLOBAL
+//#include "global.h"
+#include "geom_pbc.c"
 #include <vector>
 /**
  * @file test.cc
  * 
- * @brief this file contains the unit test suite for the conjugate gradiant project, specifically for the functions of the KonGrad class
+ * @brief this file contains the unit test suite for the KonGrad class
  * 
  * 
  * 
@@ -41,7 +44,73 @@ struct F {
 
 };
 
+struct Lorenzfield {
+	Lorenzfield(){
+		KonGrad testSLE; // SLE = system of linear equations
+		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::trace);
+		ndim=2;
+
+		lsize = (int *) malloc((ndim+1) * sizeof(int));
+        lsize[1]=3;
+	    lsize[2]=3;
+	    geom_pbc();
+
+	}
+	~Lorenzfield() {   }
+
+	KonGrad testSLE;
+};
+
+
 BOOST_AUTO_TEST_SUITE (kongrad_test) 
+
+
+
+
+/**
+ * @brief test if that the the Laplaceoperator is correctly applied to a small 2-D field
+ *
+ * @details The Input field looks like:<br>
+ * 1 2 1 <br>
+ * 2 3 2<br>
+ * 1 2 1
+ *
+ * The output field should look like:<br>
+ * -2 1 -2<br>
+ * 1 4 1<br>
+ * -2 1 -2
+ *
+ * This unittest tests the function KonGrad::matrixVectorLaplace
+ */
+BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, Lorenzfield ){
+	vector <double> vecin;
+	vector <double> vecout;
+	testSLE.setmass(0);
+
+	vecin.push_back(1);
+	vecin.push_back(2);
+	vecin.push_back(1);
+	vecin.push_back(2);
+	vecin.push_back(3);
+	vecin.push_back(2);
+	vecin.push_back(1);
+	vecin.push_back(2);
+	vecin.push_back(1);
+	testSLE.matrixVectorLaplace(vecin, vecout);
+    BOOST_CHECK_EQUAL(vecout.at(0),-2);
+    BOOST_CHECK_EQUAL(vecout.at(1),1);
+    BOOST_CHECK_EQUAL(vecout.at(2),-2);
+    BOOST_CHECK_EQUAL(vecout.at(3),1);
+    BOOST_CHECK_EQUAL(vecout.at(4),4);
+    BOOST_CHECK_EQUAL(vecout.at(5),1);
+    BOOST_CHECK_EQUAL(vecout.at(6),-2);
+    BOOST_CHECK_EQUAL(vecout.at(7),1);
+    BOOST_CHECK_EQUAL(vecout.at(8),-2);
+
+}
+
+
+
 
 /**
  * test if that the skalar product of (2;2) and (2;2) is indeed 8.
@@ -144,8 +213,8 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
         line.at(i)=i;
         matrix.push_back(line);
     }
-    
-    testSLE.matrixVector(matrix, vecin, vecout);
+    testSLE.setMatrix(matrix);
+    testSLE.matrixVector(vecin, vecout);
     
     for (int i=0;i<3;++i){
         BOOST_CHECK_EQUAL(vecout.at(i),i);
@@ -153,6 +222,9 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
     
 
 }
+
+
+
 
 
 /**

@@ -1,4 +1,5 @@
 #include "kongrad.hh"
+#define DEFINE_GLOBAL
 #include "global.h"
 #include <iostream>
 #include <cassert>
@@ -101,6 +102,16 @@ int main(int argc, char** argv){
     vector<double> result;
     LGS01.solve(c, result);
     
+
+
+    ndim=2;
+    //int * lsize = new int[3];
+    lsize[1]=3;
+    lsize[2]=3;
+
+
+
+
     return 0;
 }
 

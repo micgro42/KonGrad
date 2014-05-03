@@ -1,4 +1,6 @@
 #include "kongrad.hh"
+#include "global.h"
+//#include "geom_pbc.c"
 #include <vector>
 #include <random>
 #include <cassert>
@@ -14,8 +16,6 @@
  */
 
 
-
-
 KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
     _mass=0.1;
 }
@@ -29,6 +29,9 @@ KonGrad::KonGrad(){
     }
     _mass=0.1;
     _b.assign(3,0);
+
+
+//    geom_pbc();
 }
 
 
@@ -36,44 +39,36 @@ KonGrad::KonGrad(){
 
 void KonGrad::testmv(const vector<double> vecin){
     vector<double> vecout;
-    KonGrad::matrixVector(_A,vecin, vecout);
+    KonGrad::matrixVector(vecin, vecout);
 }
 
 
 
-void KonGrad::matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout){
+void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
     //check if dimensions are correct
     const int vecinDim = vecin.size();
-    const int matrixlineDim = matrix.size();
+    const int matrixlineDim = _A.size();
     assert(vecinDim==matrixlineDim);
     vecout.assign(vecinDim,0);
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecin " << printVector(vecin);
     for (int i=0;i<vecinDim;++i){
         for (int j=0;j<vecinDim;++j){
-            vecout.at(j)+=matrix.at(i).at(j)*vecin.at(j);
+            vecout.at(j)+=_A.at(i).at(j)*vecin.at(j);
         }
         
     }
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
 
-/**
- *
- * @test this function still needs unittests
- *
- * @bug add _mass*_mass factor to outer loop
- *
- *
- */
+
 void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
 	const int vecinDim = vecin.size();
 	vecout.assign(vecinDim,0);
 	for (int i=0; i<vecinDim;++i){
-        vecout.at(i)=2*ndim*vecin.at(i);
+        vecout.at(i)=(2*ndim+_mass*_mass)*vecin.at(i);
         for (int k=1;k<=ndim;++k){
-        	vecout.at(i)=-(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i]));
+        	vecout.at(i)-=(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i]));
         }
-
 	}
 }
 
@@ -208,7 +203,7 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
     BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
     
-    matrixVector(_A,startvec,tmpvec);
+    matrixVector(startvec,tmpvec);
     diffVector(_b,tmpvec, r);
     BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);
     if(sqrt(skalarProd(r,r))/bnorm < tol){
@@ -225,7 +220,7 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
         double beta;
         double relrest;
         ++iternum;
-        matrixVector(_A,p,s);
+        matrixVector(p,s);
         BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
         
         alpha=skalarProd(p,r)/skalarProd(p,s);
@@ -269,3 +264,18 @@ void KonGrad::solve (const vector<double> &startvec, vector<double> &vecout){
     }
     
 }
+
+
+
+void KonGrad::applyA(const string method, const vector<double> &vecin, vector<double> &vecout){
+	if (method=="sparseMatrix"){
+		matrixVector(vecin, vecout);
+	}
+	if (method=="Laplace"){
+	    matrixVectorLaplace(vecin, vecout);
+	}
+}
+
+
+
+

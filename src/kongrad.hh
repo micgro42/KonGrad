@@ -47,7 +47,7 @@ class KonGrad{
         double getmass(){ return _mass; };
 
         /// set the _mass parameter
-        void setmasse(double m){_mass=m;};
+        void setmass(double m){_mass=m;};
 
         
         
@@ -109,12 +109,14 @@ class KonGrad{
          * @param[out] vecout the content of this vector is removed and the new vector is written to it
          * 
          */
-        void matrixVector(const vector< vector<double> > &matrix, const vector<double> &vecin, vector<double> &vecout);
+        void matrixVector(const vector<double> &vecin, vector<double> &vecout);
         
 
         /**
+         * @brief apply the laplaceoperator and a mass to a field
          *
-         *
+         * @details This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, Lorenzfield )
          *
          * @param[in] vecin
          * @param[out] vecout
@@ -185,19 +187,21 @@ class KonGrad{
         
         void solve ();
         
+        /**
+        * @brief print the vector to stdout
+        */
+        int printVector (const vector<double> &vec);
+
     private:
         
-        /**
-         * @brief print the vector to stdout
-         */
-        int printVector (const vector<double> &vec);
         
+
         /**
          * @brief print the matrix to stdout if the dim is < 20
          */
         int printMatrix (const  vector< vector<double> > &matrix);
         
-        
+        void applyA(const string method, const vector<double> &vecin, vector<double> &vecout);
         
         
         /**
