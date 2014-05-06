@@ -95,6 +95,16 @@ void KonGrad::sumVector(const vector<double> &vecin1, const vector<double> &veci
 }
 
 
+void KonGrad::addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout){
+	const int vecin1Dim = vecin1.size();
+	const int vecin2Dim = vecin2.size();
+	assert(vecin1Dim == vecin2Dim);
+	vecout.assign(vecin1Dim,0);
+	for (int i=0;i<vecin1Dim;++i){
+        vecout.at(i)=alpha*vecin1.at(i)+beta*vecin2.at(i);
+    }
+}
+
 void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout){
     const int vecinDim = vecin.size();
     vecout.clear();
@@ -223,12 +233,10 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
         alpha=skalarProd(p,r)/skalarProd(p,s);
         BOOST_LOG_TRIVIAL(trace) << "solve: alpha " << alpha;
         
-        skalarVector(alpha,p,tmpvec);
-        sumVector(x,tmpvec,xnew);
+        addVector(1,x,alpha,p,xnew);
         BOOST_LOG_TRIVIAL(trace) << "solve: xnew " << printVector(xnew);
         
-        skalarVector(alpha,s,tmpvec);
-        diffVector(r,tmpvec,rnew);
+        addVector(1,r,-alpha,s,rnew);
         BOOST_LOG_TRIVIAL(trace) << "solve: rnew " << printVector(rnew);
         
         relrest=sqrt(skalarProd(rnew,rnew))/bnorm;
@@ -248,10 +256,7 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
         
         beta=skalarProd(rnew,rnew)/skalarProd(r,r);
         BOOST_LOG_TRIVIAL(trace) << "solve: beta " << beta;
-        
-        
-        skalarVector(beta,p,tmpvec);
-        sumVector(rnew,tmpvec,pnew);
+        addVector(1,rnew,beta,p,pnew);
         p=pnew;
         r=rnew;
         x=xnew;

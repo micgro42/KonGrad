@@ -96,6 +96,18 @@ class KonGrad{
          */
         void skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout);
         
+
+        /**
+         *
+         * @brief function that two vectors with a scalar and adds them
+         *
+         * @details these function combines the functionality of KonGrad::skalarVector and KonGrad::sumVector
+         * \f$ \vec{v}_{\text{out}}=\alpha\vec{v}_{\text{in}1}+\beta\vec{v}_{\text{in}2} \f$
+         *
+         *
+         */
+        void addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout);
+
         /**
          * @brief Mulitply a matrix and a vector
          * 

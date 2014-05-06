@@ -22,7 +22,7 @@ geom_pbc.o: $(SRCDIR)geom_pbc.c
 unittest: test.o kongrad.o geom_pbc.o
 	$(CC) $(LDFLAGS) kongrad.o test.o $(LDLIBS) -o unittest
 
-test.o: $(SRCDIR)test.cc
+test.o: $(SRCDIR)test.cc kongrad.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)test.cc
 
 clean:

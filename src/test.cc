@@ -47,7 +47,7 @@ struct F {
 struct scalarfield {
 	scalarfield(){
 		KonGrad testSLE; // SLE = system of linear equations
-		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::trace);
+		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
 		ndim=2;
 
 		lsize = (int *) malloc((ndim+1) * sizeof(int));
@@ -169,6 +169,33 @@ BOOST_FIXTURE_TEST_CASE( sumVector, F ){
     
     for (int i=0;i<5;++i){
         BOOST_CHECK_EQUAL(sum.at(i),(i+i+3));
+    }
+}
+
+
+/**
+ * test if some small integers are summed correctly.
+ *
+ * This unittest tests the function KonGrad::addVector
+ */
+BOOST_FIXTURE_TEST_CASE( addVector, F ){
+
+    vector<double> vecin1,vecin2,sum;
+    double alpha,beta;
+    alpha=0.5;
+    beta=-0.5;
+
+    for (int i=0;i<5;++i){
+        vecin1.push_back(i+0.75);
+        vecin2.push_back(i+0.5);
+    }
+
+    BOOST_REQUIRE(vecin1.size()==vecin2.size());
+
+    testSLE.addVector(alpha, vecin1, beta, vecin2, sum);
+
+    for (int i=0;i<5;++i){
+        BOOST_CHECK_EQUAL(sum.at(i),0.125);
     }
 }
 
