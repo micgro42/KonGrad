@@ -30,6 +30,8 @@ class KonGrad{
         ///The default constructor, creates 3x3 unitmatirx and 3-dim 0-vector
         KonGrad();
         
+        ~KonGrad();
+
         /// set the Matrix of the system of linear equations
         void setMatrix(const vector< vector<double> > &matrix) {_A=matrix;};
         
@@ -48,6 +50,10 @@ class KonGrad{
 
         /// set the _mass parameter
         void setmass(double m){_mass=m;};
+
+
+        ///
+        int calculateKonRate();
 
         
         
@@ -171,6 +177,14 @@ class KonGrad{
          */
         void createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout);
         
+
+        /**
+         * @brief creates a vector of length dim with random entries between 0 and 1
+         *
+         * @test this function must be tested
+         */
+        void createRandomVector(const int dim, vector<double> &vecout);
+
         /**
          * 
          * @brief function to solve the system of linear equations

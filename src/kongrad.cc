@@ -1,5 +1,6 @@
 #include "kongrad.hh"
 #include "global.h"
+#include "timedif.h"
 //#include "geom_pbc.c"
 #include <vector>
 #include <random>
@@ -32,6 +33,9 @@ KonGrad::KonGrad(){
 }
 
 
+KonGrad::~KonGrad(){
+
+}
 
 
 void KonGrad::testmv(const vector<double> vecin){
@@ -57,14 +61,15 @@ void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecout " << printVector(vecout);
 }
 
-
+/// Performance: (1 + ndim*2) Flops
 void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
 	const int vecinDim = vecin.size();
 	vecout.assign(vecinDim,0);
+	double phivar=2*ndim+_mass*_mass;
 	for (int i=0; i<vecinDim;++i){
-        vecout.at(i)=(2*ndim+_mass*_mass)*vecin.at(i);
-        for (int k=1;k<=ndim;++k){
-        	vecout.at(i)-=(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i]));
+        vecout.at(i)=phivar*vecin.at(i); //1 Flop
+        for (int k=1;k<=ndim;++k){ //ndim times
+        	vecout.at(i)-=(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i])); //2 Flops
         }
 	}
 }
@@ -81,6 +86,14 @@ void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vec
     }
 }
 
+int KonGrad::calculateKonRate(){
+    double gamma=_mass/sqrt(ndim);
+    double tol=pow(10,-8);
+    double steps = -log(tol)/gamma;
+    cout << "gamma " << gamma << endl;
+    cout << "steps " << steps << endl;
+    return ceil(steps);
+}
 
 void KonGrad::sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
@@ -101,7 +114,7 @@ void KonGrad::addVector(const double alpha, const vector<double> &vecin1, const 
 	assert(vecin1Dim == vecin2Dim);
 	vecout.assign(vecin1Dim,0);
 	for (int i=0;i<vecin1Dim;++i){
-        vecout.at(i)=alpha*vecin1.at(i)+beta*vecin2.at(i);
+        vecout.at(i)=alpha*vecin1.at(i)+beta*vecin2.at(i); //3 Flops per lattice-dot
     }
 }
 
@@ -141,14 +154,14 @@ int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
 }
 
 
-
+///Performance: 2 Flops
 double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &vecin2){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
     double skalarProd=0;
     for (int i=0;i<vecin1Dim;++i){
-        skalarProd+=vecin1.at(i)*vecin2.at(i);
+        skalarProd+=vecin1.at(i)*vecin2.at(i);//2 Flops
     }
     return skalarProd;
 }
@@ -181,6 +194,13 @@ void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<do
     }
 }
 
+void KonGrad::createRandomVector(const int dim, vector<double> &vecout){
+	vecout.clear();
+    for (int i=0;i<dim;++i){
+    	vecout.push_back(getRandomUni());
+    }
+}
+
 void KonGrad::solve (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
     _A=matrixin;
     _b=knownRightSide;
@@ -191,6 +211,7 @@ void KonGrad::solve (const string method, const vector< vector<double> > &matrix
 void KonGrad::solve (const string method, const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
+    const int bsize=_b.size();
     vector<double> r;
     vector<double> rnew;
     vector<double> p;
@@ -198,6 +219,7 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     vector<double> s;
     vector<double> x=startvec;
     vector<double> xnew;
+    vecout.clear();
     
     //temporäre Vektoren
     vector<double> tmpvec;
@@ -222,45 +244,58 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     /// @todo weitere rechnungen in dezidierten Funktionen zusammenfassen
     bool converged=false;
     unsigned int iternum=0;
+    float totalcputime=0;
+    float itercputime=0;
+    float totalclocktime=0;
+    float iterclocktime=0;
+    double alpha;
+    double beta;
+    double rnewnorm,rnorm;
+    rnorm=skalarProd(r,r);
+    itercputime=cpudif();
+    iterclocktime=clkdif();
     while(!converged){
-        double alpha;
-        double beta;
-        double relrest;
         ++iternum;
-        applyA(method,p,s);
-        BOOST_LOG_TRIVIAL(trace) << "solve: s " << printVector(s);
+        applyA(method,p,s); //1+ndim*2
+        alpha=rnorm/skalarProd(p,s); //2+1=3
         
-        alpha=skalarProd(p,r)/skalarProd(p,s);
-        BOOST_LOG_TRIVIAL(trace) << "solve: alpha " << alpha;
+        addVector(1,x,alpha,p,xnew); //3
         
-        addVector(1,x,alpha,p,xnew);
-        BOOST_LOG_TRIVIAL(trace) << "solve: xnew " << printVector(xnew);
+        addVector(1,r,-alpha,s,rnew); //3
         
-        addVector(1,r,-alpha,s,rnew);
-        BOOST_LOG_TRIVIAL(trace) << "solve: rnew " << printVector(rnew);
-        
-        relrest=sqrt(skalarProd(rnew,rnew))/bnorm;
-        BOOST_LOG_TRIVIAL(debug) << "relrest: " << relrest;
-        if( relrest < tol){
+        rnewnorm=skalarProd(rnew,rnew); //2
+        if( sqrt(rnewnorm)/bnorm < tol){
             BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
             converged=true;
             BOOST_LOG_TRIVIAL(info) << "resultvector: " << printVector(xnew);
         }
         
-        if ( iternum > 2*_A.size() ){
+        if ( iternum > 2*bsize ){
             BOOST_LOG_TRIVIAL(error) << "The algorithm did not converge. Aborted. Iterations: " << iternum;
             break;
         }
-        
-        BOOST_LOG_TRIVIAL(debug) << "resultvector x at iteration " << iternum << ": " << printVector(xnew);
-        
-        beta=skalarProd(rnew,rnew)/skalarProd(r,r);
-        BOOST_LOG_TRIVIAL(trace) << "solve: beta " << beta;
-        addVector(1,rnew,beta,p,pnew);
+
+        beta=rnewnorm/rnorm; //3
+        addVector(1,rnew,beta,p,pnew); //3
         p=pnew;
         r=rnew;
         x=xnew;
+        rnorm=rnewnorm;
+        itercputime=cpudif();
+        iterclocktime=clkdif();
+        totalcputime+=itercputime;
+        totalclocktime+=iterclocktime;
     }
+    int NumberOfFlops = 1+ndim*2 +3+3+3+2+3+3;
+    BOOST_LOG_TRIVIAL(info) << "total cpu time: " << totalcputime << " s";
+    BOOST_LOG_TRIVIAL(info) << "cpu time per iteration: " << totalcputime/iternum << " s";
+    BOOST_LOG_TRIVIAL(info) << "cpu time per iteration and lattice-dot: " << totalcputime/iternum/nvol*pow(10,9) << " ns";
+    BOOST_LOG_TRIVIAL(info) << "total clock time: " << totalclocktime << " s";
+    BOOST_LOG_TRIVIAL(info) << "clock time per iteration: " << totalclocktime/iternum << " s";
+    BOOST_LOG_TRIVIAL(info) << "clock time per iteration and lattice-dot: " << totalclocktime/iternum/nvol*pow(10,9) << " ns";
+    BOOST_LOG_TRIVIAL(info) << "Flops per iteration: " << NumberOfFlops;
+    BOOST_LOG_TRIVIAL(info) << "Total: " << NumberOfFlops*iternum*nvol/pow(10,9) << " GFlops";
+    BOOST_LOG_TRIVIAL(info) << "Performance: " << NumberOfFlops*iternum*nvol/pow(10,9)/totalcputime << " GFlops/s";
     if (converged){
         vecout=xnew;
     }

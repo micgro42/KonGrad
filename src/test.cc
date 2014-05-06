@@ -56,7 +56,7 @@ struct scalarfield {
 	    geom_pbc();
 
 	}
-	~scalarfield() {   }
+	~scalarfield() { free(lsize);  }
 
 	KonGrad testSLE;
 };
@@ -446,6 +446,18 @@ BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F){
         nonZeroTotal+=nonZero;
     }
     BOOST_LOG_TRIVIAL(info) << "The dim of testmatrix: " << dim << " nonZeroTotal: " << nonZeroTotal;
+}
+
+BOOST_FIXTURE_TEST_CASE(createRandomVector, F){
+
+    vector<double> a,b;
+    int dim = 1000;
+
+    testSLE.createRandomVector(dim, a);
+    testSLE.createRandomVector(dim, b);
+    for (int i=0;i<dim;++i){
+        BOOST_CHECK(a.at(i)!=b.at(i));
+    }
 }
 
 

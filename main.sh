@@ -1,0 +1,6 @@
+#!/bin/bash
+LOGLVL=3
+STEPS=50
+MASS=0.1
+NDIM=3
+./main $LOGLVL $STEPS $MASS $NDIM

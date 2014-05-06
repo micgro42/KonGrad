@@ -1,6 +1,6 @@
 #include "kongrad.hh"
 #define DEFINE_GLOBAL
-#include "global.h"
+#include "geom_pbc.c"
 #include <iostream>
 #include <cassert>
 #include <boost/log/core.hpp>
@@ -40,7 +40,7 @@
 namespace logging = boost::log;
 using namespace std;
 
-void init(const int loglevel){
+void initlog(const int loglevel){
     /// @todo so umschreiben, dass der Aufruf mit ./main --loglevel=info erfolgt
         switch (loglevel){
             case 0:
@@ -70,9 +70,9 @@ void init(const int loglevel){
 
 int main(int argc, char** argv){
     if (argc > 1){
-        init(atoi(argv[1]));
+        initlog(atoi(argv[1]));
     }else{
-        init(3);
+        initlog(3);
     }
     
 
@@ -104,10 +104,25 @@ int main(int argc, char** argv){
     
 
 
-    ndim=2;
-    //int * lsize = new int[3];
-    lsize[1]=3;
-    lsize[2]=3;
+    ndim=atoi(argv[4]);
+    int steps=atoi(argv[2]);
+    lsize = (int *) malloc((ndim+1) * sizeof(int));
+    for (int i=1; i<=ndim; ++i){
+        lsize[i]=steps;
+    }
+    geom_pbc();
+    cout << "nvol " << nvol << endl;
+    LGS01.createRandomVector(nvol,b);
+    LGS01.setb(b);
+    LGS01.setmass(atof(argv[3]));
+    LGS01.calculateKonRate();
+    LGS01.solve("Laplace",b,result);
+
+// Gute Zeit: 10ns
+
+
+
+    free(lsize);
 
 
 
