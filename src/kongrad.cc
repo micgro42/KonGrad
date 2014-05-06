@@ -29,9 +29,6 @@ KonGrad::KonGrad(){
     }
     _mass=0.1;
     _b.assign(3,0);
-
-
-//    geom_pbc();
 }
 
 
@@ -197,8 +194,11 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     
     BOOST_LOG_TRIVIAL(debug) << "solve: start vector " << printVector(startvec);
     BOOST_LOG_TRIVIAL(debug) << "solve: known right side " << printVector(_b);
-    BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
     
+    if (method=="sparseMatrix"){
+        BOOST_LOG_TRIVIAL(debug) << "solve: matrix " << printMatrix(_A);
+    }
+
     applyA(method,startvec,tmpvec);
     diffVector(_b,tmpvec, r);
     BOOST_LOG_TRIVIAL(trace) << "solve: r " << printVector(r);

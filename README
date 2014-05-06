@@ -6,3 +6,11 @@ The documentation can be found at:
     
 The website for the course can be found at:
     http://www-com.physik.hu-berlin.de/~bunk/cp3/
+    
+Thie files geom_pbc.c and global.h can be obtained with:
+
+```sh
+cd ..
+wget -vN http://www-com.physik.hu-berlin.de/~bunk/cp3/geom_pbc.c
+wget -vN http://www-com.physik.hu-berlin.de/~bunk/cp3/global.h
+```

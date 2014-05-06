@@ -265,7 +265,7 @@ BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F){
  * the startvector is the "known right side"
  */
 BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
-	vector <double> b,startvector,resultvector;
+	vector <double> b,startvector,resultvector, controlvector;
 	testSLE.setmass(0);
 	b.push_back(-2);
 	b.push_back(1);
@@ -277,22 +277,26 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
 	b.push_back(1);
 	b.push_back(-2);
 	testSLE.setb(b);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(3);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
 	testSLE.solve("Laplace",b, resultvector);
-	BOOST_CHECK_EQUAL(resultvector.at(0),1);
-	BOOST_CHECK_EQUAL(resultvector.at(1),2);
-	BOOST_CHECK_EQUAL(resultvector.at(2),1);
-	BOOST_CHECK_EQUAL(resultvector.at(3),2);
-	BOOST_CHECK_EQUAL(resultvector.at(4),3);
-	BOOST_CHECK_EQUAL(resultvector.at(5),2);
-	BOOST_CHECK_EQUAL(resultvector.at(6),1);
-	BOOST_CHECK_EQUAL(resultvector.at(7),2);
-	BOOST_CHECK_EQUAL(resultvector.at(8),1);
+	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
+	for (int i=0;i<9;++i){
+	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
+	}
 }
 
 
 /// the startvector is always the same number
 BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
-	vector <double> b,startvector,resultvector;
+	vector <double> b,startvector,resultvector, controlvector;
 	testSLE.setmass(0);
 	b.push_back(-2);
 	b.push_back(1);
@@ -304,17 +308,21 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
 	b.push_back(1);
 	b.push_back(-2);
 	testSLE.setb(b);
-	startvector.assign(9,5);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(3);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
+	controlvector.push_back(2);
+	controlvector.push_back(1);
+	startvector.assign(9,1);
 	testSLE.solve("Laplace",startvector, resultvector);
-	BOOST_CHECK_EQUAL(resultvector.at(0),1);
-	BOOST_CHECK_EQUAL(resultvector.at(1),2);
-	BOOST_CHECK_EQUAL(resultvector.at(2),1);
-	BOOST_CHECK_EQUAL(resultvector.at(3),2);
-	BOOST_CHECK_EQUAL(resultvector.at(4),3);
-	BOOST_CHECK_EQUAL(resultvector.at(5),2);
-	BOOST_CHECK_EQUAL(resultvector.at(6),1);
-	BOOST_CHECK_EQUAL(resultvector.at(7),2);
-	BOOST_CHECK_EQUAL(resultvector.at(8),1);
+	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
+	for (int i=0;i<9;++i){
+	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
+	}
 }
 
 
