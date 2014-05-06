@@ -201,6 +201,18 @@ class KonGrad{
          */
         int printMatrix (const  vector< vector<double> > &matrix);
         
+        /**
+        * @brief choose the correct method of applying A to the Vector
+        *
+        * @details To make the function solve universal we need a subfunction to distinguish the different problems and use the approbiate subfunction
+        *
+        * @param[in] method Parameter to distinguish the methods. It can be the following:
+        * - sparseMatrix
+        * - Laplace
+        * - Dirichlet (this function is yet to be implemented)
+        *
+        *   @todo: implement dirichlet function
+        */    
         void applyA(const string method, const vector<double> &vecin, vector<double> &vecout);
         
         
@@ -216,7 +228,7 @@ class KonGrad{
         /// "known right side"
         vector<double> _b;
         
-        /// mass for periodic conditios: \f$ A=\Delta + m \f$
+        /// mass for periodic conditions: \f$ A=\Delta + m \f$
         double _mass;
 
         ///random generator
