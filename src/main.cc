@@ -100,7 +100,7 @@ int main(int argc, char** argv){
     c.push_back(2);
     c.push_back(2);
     vector<double> result;
-    LGS01.solve("sparseMatrix",c, result);
+//    LGS01.solve("sparseMatrix",c, result);
     
 
 

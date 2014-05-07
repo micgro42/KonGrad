@@ -65,10 +65,12 @@ void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
 void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
 	const int vecinDim = vecin.size();
 	vecout.assign(vecinDim,0);
-	double phivar=2*ndim+_mass*_mass;
+	const double phivar=2*ndim+_mass*_mass;
+	int k;
+#pragma omp parallel for shared(vecout,vecin,nn,ndim) private(k)
 	for (int i=0; i<vecinDim;++i){
         vecout.at(i)=phivar*vecin.at(i); //1 Flop
-        for (int k=1;k<=ndim;++k){ //ndim times
+        for (k=1;k<=ndim;++k){ //ndim times
         	vecout.at(i)-=(vecin.at(nn[k][i])+vecin.at(nn[k+ndim][i])); //2 Flops
         }
 	}
@@ -113,6 +115,7 @@ void KonGrad::addVector(const double alpha, const vector<double> &vecin1, const 
 	const int vecin2Dim = vecin2.size();
 	assert(vecin1Dim == vecin2Dim);
 	vecout.assign(vecin1Dim,0);
+#pragma omp parallel for shared(vecout, vecin1, vecin2)
 	for (int i=0;i<vecin1Dim;++i){
         vecout.at(i)=alpha*vecin1.at(i)+beta*vecin2.at(i); //3 Flops per lattice-dot
     }
@@ -160,6 +163,7 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
     double skalarProd=0;
+#pragma omp parallel for shared(vecin1, vecin2) reduction(+: skalarProd)
     for (int i=0;i<vecin1Dim;++i){
         skalarProd+=vecin1.at(i)*vecin2.at(i);//2 Flops
     }
@@ -275,17 +279,17 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
             break;
         }
 
-        beta=rnewnorm/rnorm; //3
+        beta=0.5*rnewnorm/rnorm; //3
         addVector(1,rnew,beta,p,pnew); //3
         p=pnew;
         r=rnew;
         x=xnew;
         rnorm=rnewnorm;
-        itercputime=cpudif();
-        iterclocktime=clkdif();
-        totalcputime+=itercputime;
-        totalclocktime+=iterclocktime;
     }
+    itercputime=cpudif();
+    iterclocktime=clkdif();
+    totalcputime+=itercputime;
+    totalclocktime+=iterclocktime;
     int NumberOfFlops = 1+ndim*2 +3+3+3+2+3+3;
     BOOST_LOG_TRIVIAL(info) << "total cpu time: " << totalcputime << " s";
     BOOST_LOG_TRIVIAL(info) << "cpu time per iteration: " << totalcputime/iternum << " s";
@@ -293,6 +297,7 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     BOOST_LOG_TRIVIAL(info) << "total clock time: " << totalclocktime << " s";
     BOOST_LOG_TRIVIAL(info) << "clock time per iteration: " << totalclocktime/iternum << " s";
     BOOST_LOG_TRIVIAL(info) << "clock time per iteration and lattice-dot: " << totalclocktime/iternum/nvol*pow(10,9) << " ns";
+    BOOST_LOG_TRIVIAL(info) << "cputime/clktime: " << (double)totalcputime/totalclocktime;
     BOOST_LOG_TRIVIAL(info) << "Flops per iteration: " << NumberOfFlops;
     BOOST_LOG_TRIVIAL(info) << "Total: " << NumberOfFlops*iternum*nvol/pow(10,9) << " GFlops";
     BOOST_LOG_TRIVIAL(info) << "Performance: " << NumberOfFlops*iternum*nvol/pow(10,9)/totalcputime << " GFlops/s";

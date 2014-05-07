@@ -70,7 +70,7 @@ class KonGrad{
          *   - BOOST_FIXTURE_TEST_CASE( skalarProd, F )
          *
          */
-        double skalarProd(const vector<double> &vecin1, const vector<double> &vecin2);
+        inline double skalarProd(const vector<double> &vecin1, const vector<double> &vecin2);
         
         
         /**
@@ -112,7 +112,7 @@ class KonGrad{
          *
          *
          */
-        void addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout);
+        inline void addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout);
 
         /**
          * @brief Mulitply a matrix and a vector
@@ -139,7 +139,7 @@ class KonGrad{
          * @param[in] vecin
          * @param[out] vecout
          */
-        void matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout);
+        inline void matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout);
 
         /// check if a matrix is symmetric
         bool matrixIsSymmetric(const vector< vector<double> > &matrix);
