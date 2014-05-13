@@ -261,11 +261,11 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     while(!converged){
         ++iternum;
         applyA(method,p,s); //1+ndim*2
-        alpha=rnorm/skalarProd(p,s); //2+1=3
+        alpha=rnorm/skalarProd(p,s); //2
         
-        addVector(1,x,alpha,p,xnew); //3
+        addVector(1,x,alpha,p,xnew); //2
         
-        addVector(1,r,-alpha,s,rnew); //3
+        addVector(1,r,-alpha,s,rnew); //2
         
         rnewnorm=skalarProd(rnew,rnew); //2
         if( sqrt(rnewnorm)/bnorm < tol){
@@ -279,8 +279,8 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
             break;
         }
 
-        beta=0.5*rnewnorm/rnorm; //3
-        addVector(1,rnew,beta,p,pnew); //3
+        beta=0.5*rnewnorm/rnorm;
+        addVector(1,rnew,beta,p,pnew); //2
         p=pnew;
         r=rnew;
         x=xnew;
@@ -290,7 +290,7 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     iterclocktime=clkdif();
     totalcputime+=itercputime;
     totalclocktime+=iterclocktime;
-    int NumberOfFlops = 1+ndim*2 +3+3+3+2+3+3;
+    int NumberOfFlops = 1+ndim*2 +2+2+2+2+2;
     BOOST_LOG_TRIVIAL(info) << "total cpu time: " << totalcputime << " s";
     BOOST_LOG_TRIVIAL(info) << "cpu time per iteration: " << totalcputime/iternum << " s";
     BOOST_LOG_TRIVIAL(info) << "cpu time per iteration and lattice-dot: " << totalcputime/iternum/nvol*pow(10,9) << " ns";
@@ -299,8 +299,8 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
     BOOST_LOG_TRIVIAL(info) << "clock time per iteration and lattice-dot: " << totalclocktime/iternum/nvol*pow(10,9) << " ns";
     BOOST_LOG_TRIVIAL(info) << "cputime/clktime: " << (double)totalcputime/totalclocktime;
     BOOST_LOG_TRIVIAL(info) << "Flops per iteration: " << NumberOfFlops;
-    BOOST_LOG_TRIVIAL(info) << "Total: " << NumberOfFlops*iternum*nvol/pow(10,9) << " GFlops";
-    BOOST_LOG_TRIVIAL(info) << "Performance: " << NumberOfFlops*iternum*nvol/pow(10,9)/totalcputime << " GFlops/s";
+    BOOST_LOG_TRIVIAL(info) << "Total: " << (double)NumberOfFlops*iternum*nvol/pow(10,9) << " GFlops";
+    BOOST_LOG_TRIVIAL(info) << "Performance: " << (double)NumberOfFlops*iternum*nvol/pow(10,9)/totalcputime << " GFlops/s";
     if (converged){
         vecout=xnew;
     }

@@ -1,7 +1,6 @@
 CC=g++
 #CFLAGS= -fopenmp -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/ 
-CFLAGS= -fopenmp -std=c++11 -O3 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
-#CFLAGS= -std=c++11 -O3 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
+CFLAGS= -fopenmp -std=c++11 -Ofast -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
 LDFLAGS= -fopenmp
 LDLIBS= -L/users/stud/micgro42/boost/lib -lpthread -lboost_log -lboost_unit_test_framework -lboost_thread -lboost_filesystem -lboost_date_time -lboost_chrono -lboost_system
 SRCDIR=src/
