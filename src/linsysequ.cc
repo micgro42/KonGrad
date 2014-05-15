@@ -1,4 +1,4 @@
-#include "kongrad.hh"
+#include "linsysequ.hh"
 #include "global.h"
 #include "timedif.h"
 //#include "geom_pbc.c"
@@ -9,19 +9,19 @@
 #include <boost/log/trivial.hpp>
 
 /**
- * @file kongrad.cc
+ * @file linsysequ.cc
  * 
- * @brief sourcecode for the KonGrad class
+ * @brief sourcecode for the LinSysEqu class
  * 
  * 
  */
 
 
-KonGrad::KonGrad(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
+LinSysEqu::LinSysEqu(vector< vector<double> > matrix, vector<double> vec) : _A(matrix), _b(vec) {
     _mass=0.1;
 }
 
-KonGrad::KonGrad(){
+LinSysEqu::LinSysEqu(){
     vector<double> line;
     for (int i=0;i<3;++i){
         line.assign(3,0);
@@ -33,19 +33,19 @@ KonGrad::KonGrad(){
 }
 
 
-KonGrad::~KonGrad(){
+LinSysEqu::~LinSysEqu(){
 
 }
 
 
-void KonGrad::testmv(const vector<double> vecin){
+void LinSysEqu::testmv(const vector<double> vecin){
     vector<double> vecout;
-    KonGrad::matrixVector(vecin, vecout);
+    LinSysEqu::matrixVector(vecin, vecout);
 }
 
 
 
-void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
+void LinSysEqu::matrixVector(const vector<double> &vecin, vector<double> &vecout){
     //check if dimensions are correct
     const int vecinDim = vecin.size();
     const int matrixlineDim = _A.size();
@@ -62,7 +62,7 @@ void KonGrad::matrixVector(const vector<double> &vecin, vector<double> &vecout){
 }
 
 /// Performance: (1 + ndim*2) Flops
-void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
+void LinSysEqu::matrixVectorLaplace(const vector<double> &vecin, vector<double> &vecout){
 	const int vecinDim = vecin.size();
 	vecout.assign(vecinDim,0);
 	const double phivar=2*ndim+_mass*_mass;
@@ -76,7 +76,7 @@ void KonGrad::matrixVectorLaplace(const vector<double> &vecin, vector<double> &v
 	}
 }
 
-void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
+void LinSysEqu::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
@@ -88,7 +88,7 @@ void KonGrad::diffVector(const vector<double> &vecin1, const vector<double> &vec
     }
 }
 
-int KonGrad::calculateKonRate(){
+int LinSysEqu::calculateKonRate(){
     double gamma=_mass/sqrt(ndim);
     double tol=pow(10,-8);
     double steps = -log(tol)/gamma;
@@ -97,7 +97,7 @@ int KonGrad::calculateKonRate(){
     return ceil(steps);
 }
 
-void KonGrad::sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
+void LinSysEqu::sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
@@ -110,7 +110,7 @@ void KonGrad::sumVector(const vector<double> &vecin1, const vector<double> &veci
 }
 
 
-void KonGrad::addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout){
+void LinSysEqu::addVector(const double alpha, const vector<double> &vecin1, const double beta, const vector<double> &vecin2, vector<double> &vecout){
 	const int vecin1Dim = vecin1.size();
 	const int vecin2Dim = vecin2.size();
 	assert(vecin1Dim == vecin2Dim);
@@ -121,7 +121,7 @@ void KonGrad::addVector(const double alpha, const vector<double> &vecin1, const 
     }
 }
 
-void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout){
+void LinSysEqu::skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout){
     const int vecinDim = vecin.size();
     vecout.clear();
     
@@ -130,7 +130,7 @@ void KonGrad::skalarVector(const double alpha, const vector<double> &vecin, vect
     }
 }
 
-int KonGrad::printVector (const vector<double> &vec){
+int LinSysEqu::printVector (const vector<double> &vec){
     // this prints out the vector if the size is smaller than 20.
     bool isSmallerThan20 = ( vec.size() < 20 );
     if ( isSmallerThan20 ){
@@ -142,7 +142,7 @@ int KonGrad::printVector (const vector<double> &vec){
     return 0;
 }
 
-int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
+int LinSysEqu::printMatrix (const  vector< vector<double> > &matrix){
     // this prints out the matrix if the size is smaller than 20.
     bool isSmallerThan20 = ( matrix.size() < 20 );
     if ( isSmallerThan20 ){
@@ -158,7 +158,7 @@ int KonGrad::printMatrix (const  vector< vector<double> > &matrix){
 
 
 ///Performance: 2 Flops
-double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &vecin2){
+double LinSysEqu::skalarProd(const vector<double> &vecin1, const vector<double> &vecin2){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
@@ -171,19 +171,19 @@ double KonGrad::skalarProd(const vector<double> &vecin1, const vector<double> &v
 }
 
 
-double KonGrad::getRandomUni(){
+double LinSysEqu::getRandomUni(){
 
     uniform_real_distribution<double> distributiond(0.0,1.0); // to generate the values
     return distributiond(_randGenerator);
 }
 
-void KonGrad::startRandomGenerator (double seed){
+void LinSysEqu::startRandomGenerator (double seed){
     _randGenerator.seed(seed);
 }
 
 
 
-void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout){
+void LinSysEqu::createRandomSparseSymmetricMatrix(const int dim, vector< vector<double> > &matrixout){
     for (int i=0;i<dim;++i){
         vector<double> line(dim,0);
         int numNonZero=3*getRandomUni();
@@ -198,21 +198,21 @@ void KonGrad::createRandomSparseSymmetricMatrix(const int dim, vector< vector<do
     }
 }
 
-void KonGrad::createRandomVector(const int dim, vector<double> &vecout){
+void LinSysEqu::createRandomVector(const int dim, vector<double> &vecout){
 	vecout.clear();
     for (int i=0;i<dim;++i){
     	vecout.push_back(getRandomUni());
     }
 }
 
-void KonGrad::solve (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
+void LinSysEqu::solveLSE (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout){
     _A=matrixin;
     _b=knownRightSide;
-    solve(method, startvec, vecout);
+    solveLSE(method, startvec, vecout);
 }
 
 
-void KonGrad::solve (const string method, const vector<double> &startvec, vector<double> &vecout){
+void LinSysEqu::solveLSE (const string method, const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
     const int bsize=_b.size();
@@ -309,7 +309,7 @@ void KonGrad::solve (const string method, const vector<double> &startvec, vector
 
 
 
-void KonGrad::applyA(const string method, const vector<double> &vecin, vector<double> &vecout){
+void LinSysEqu::applyA(const string method, const vector<double> &vecin, vector<double> &vecout){
 	if (method=="sparseMatrix"){
 		matrixVector(vecin, vecout);
 	}

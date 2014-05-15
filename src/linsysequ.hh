@@ -1,5 +1,5 @@
-#ifndef KONGRAD_HH
-#define KONGRAD_HH
+#ifndef LINSYSEQU_HH
+#define LINSYSEQU_HH
 #include <vector>
 #include <random>
 
@@ -7,7 +7,7 @@ using namespace std;
 
 
 /**
- * @file kongrad.hh
+ * @file linsysequ.hh
  * 
  * @brief header for the KonGrad class
  * 
@@ -17,20 +17,20 @@ using namespace std;
 
 
 /**
- * @class KonGrad
+ * @class LinSysEqu
  * 
  * @brief Class to store and solve linear system of equations
  * 
  */
-class KonGrad{
+class LinSysEqu{
     public:
         ///The Constructor
-        KonGrad(vector<vector<double> > Matrix, vector<double> vec);
+        LinSysEqu(vector<vector<double> > Matrix, vector<double> vec);
         
         ///The default constructor, creates 3x3 unitmatirx and 3-dim 0-vector
-        KonGrad();
+        LinSysEqu();
         
-        ~KonGrad();
+        ~LinSysEqu();
 
         /// set the Matrix of the system of linear equations
         void setMatrix(const vector< vector<double> > &matrix) {_A=matrix;};
@@ -191,10 +191,10 @@ class KonGrad{
          * 
          *
          * @details This function is tested with the following unittest(s):
-         *    - BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F)
-         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield)
-         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield)
-         *    - BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield)
+         *    - BOOST_FIXTURE_TEST_CASE(solveLSE_sparseMatrix, F)
+         *    - BOOST_FIXTURE_TEST_CASE(solveLSE_LaplaceOp_periodic_1, scalarfield)
+         *    - BOOST_FIXTURE_TEST_CASE(solveLSE_LaplaceOp_periodic_2, scalarfield)
+         *    - BOOST_FIXTURE_TEST_CASE(solveLSE_LaplaceOp_periodic_3, scalarfield)
          *
          * @param[in] startvec vector from which to start
          * 
@@ -202,7 +202,7 @@ class KonGrad{
          * 
          * 
          */
-        void solve (const string method, const vector<double> &startvec, vector<double> &vecout);
+        void solveLSE (const string method, const vector<double> &startvec, vector<double> &vecout);
         
         /**
          * @brief solve with option to handover the matrix and known right side to the solve function
@@ -211,7 +211,7 @@ class KonGrad{
          * 
          * 
          */
-        void solve (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
+        void solveLSE (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
         
        /**
         * @brief print the vector to stdout

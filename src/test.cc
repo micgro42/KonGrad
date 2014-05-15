@@ -4,7 +4,7 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-#include "kongrad.hh"
+#include "linsysequ.hh"
 #define DEFINE_GLOBAL
 //#include "global.h"
 #include "geom_pbc.c"
@@ -12,7 +12,7 @@
 /**
  * @file test.cc
  * 
- * @brief this file contains the unit test suite for the KonGrad class
+ * @brief this file contains the unit test suite for the LinSysEqu class
  * 
  * 
  * 
@@ -35,18 +35,18 @@ struct F {
 
 //     F() : i( 0 ) { std::cout << "setup" << std::endl; }
     F(){
-        KonGrad testSLE; // SLE = system of linear equations
+        LinSysEqu testSLE; // SLE = system of linear equations
         logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
     }
     ~F()          {  }
     
-    KonGrad testSLE;
+    LinSysEqu testSLE;
 
 };
 
 struct scalarfield {
 	scalarfield(){
-		KonGrad testSLE; // SLE = system of linear equations
+		LinSysEqu testSLE; // SLE = system of linear equations
 		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
 		ndim=2;
 
@@ -58,7 +58,7 @@ struct scalarfield {
 	}
 	~scalarfield() { free(lsize);  }
 
-	KonGrad testSLE;
+	LinSysEqu testSLE;
 };
 
 
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_SUITE (kongrad_test)
  * 1 4 1<br>
  * -2 1 -2
  *
- * This unittest tests the function KonGrad::matrixVectorLaplace
+ * This unittest tests the function LinSysEqu::matrixVectorLaplace
  */
 BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield ){
 	vector <double> vecin;
@@ -115,7 +115,7 @@ BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield ){
 /**
  * test if that the skalar product of (2;2) and (2;2) is indeed 8.
  *
- * This unittest tests the function KonGrad::skalarProd
+ * This unittest tests the function LinSysEqu::skalarProd
  */
 BOOST_FIXTURE_TEST_CASE( skalarProd, F ){
     
@@ -128,7 +128,7 @@ BOOST_FIXTURE_TEST_CASE( skalarProd, F ){
 /**
  * test if some small integers are subtracted from each other correctly.
  *
- * This unittest tests the function KonGrad::diffVector
+ * This unittest tests the function LinSysEqu::diffVector
  */
 BOOST_FIXTURE_TEST_CASE( diffVector, F ){
     
@@ -152,7 +152,7 @@ BOOST_FIXTURE_TEST_CASE( diffVector, F ){
 /**
  * test if some small integers are summed correctly.
  *
- * This unittest tests the function KonGrad::sumVector
+ * This unittest tests the function LinSysEqu::sumVector
  */
 BOOST_FIXTURE_TEST_CASE( sumVector, F ){
     
@@ -176,7 +176,7 @@ BOOST_FIXTURE_TEST_CASE( sumVector, F ){
 /**
  * test if some small integers are summed correctly.
  *
- * This unittest tests the function KonGrad::addVector
+ * This unittest tests the function LinSysEqu::addVector
  */
 BOOST_FIXTURE_TEST_CASE( addVector, F ){
 
@@ -203,7 +203,7 @@ BOOST_FIXTURE_TEST_CASE( addVector, F ){
 /**
  * test if a vector of precise doubles is correctly multplied by another double
  *
- * This unittest tests the function KonGrad::skalarVector .
+ * This unittest tests the function LinSysEqu::skalarVector .
  */
 BOOST_FIXTURE_TEST_CASE( skalarVector, F ){
     vector<double> vecin,prod;
@@ -226,7 +226,7 @@ BOOST_FIXTURE_TEST_CASE( skalarVector, F ){
 /**
  * @brief test that a diagonal matrix and a vector are multiplied correctly
  *
- * @details This unittest tests the function KonGrad::matrixVector
+ * @details This unittest tests the function LinSysEqu::matrixVector
  */
 BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
     
@@ -257,9 +257,9 @@ BOOST_FIXTURE_TEST_CASE( matrixVector, F ){
 /**
  * @brief test that a diagonal matrix and a vector are multiplied correctly
  *
- * @details This unittest tests the function KonGrad::solve(const vector<double> &startvec, vector<double> &vecout)
+ * @details This unittest tests the function LinSysEqu::solveLSE(const vector<double> &startvec, vector<double> &vecout)
  */
-BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F){
+BOOST_FIXTURE_TEST_CASE(solveSLE_sparseMatrix, F){
     
     
     //create 10x10 unit matrix
@@ -276,7 +276,7 @@ BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F){
     testSLE.setMatrix(matrix);
     testSLE.setb(b);
     vector<double> resultvector;
-    testSLE.solve("sparseMatrix",startvector, resultvector);
+    testSLE.solveLSE("sparseMatrix",startvector, resultvector);
     
     for( vector<double>::const_iterator i = resultvector.begin(); i != resultvector.end(); ++i){
         BOOST_CHECK_CLOSE(*i,1,0.000001); //tolerance 10^-8
@@ -291,7 +291,7 @@ BOOST_FIXTURE_TEST_CASE(solve_sparseMatrix, F){
  * @details this test goes the opposite direction of the test BOOST_FIXTURE_TEST_CASE( matrixVectorLaplace_m0, scalarfield )
  * the startvector is the "known right side"
  */
-BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
+BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_1, scalarfield){
 	vector <double> b,startvector,resultvector, controlvector;
 	testSLE.setmass(0);
 	b.push_back(-2);
@@ -313,7 +313,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
 	controlvector.push_back(1);
 	controlvector.push_back(2);
 	controlvector.push_back(1);
-	testSLE.solve("Laplace",b, resultvector);
+	testSLE.solveLSE("Laplace",b, resultvector);
 	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
 	for (int i=0;i<9;++i){
 	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
@@ -322,7 +322,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_1, scalarfield){
 
 
 /// the startvector is always the same number
-BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
+BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_2, scalarfield){
 	vector <double> b,startvector,resultvector, controlvector;
 	testSLE.setmass(0);
 	b.push_back(-2);
@@ -345,7 +345,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
 	controlvector.push_back(2);
 	controlvector.push_back(1);
 	startvector.assign(9,1);
-	testSLE.solve("Laplace",startvector, resultvector);
+	testSLE.solveLSE("Laplace",startvector, resultvector);
 	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
 	for (int i=0;i<9;++i){
 	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
@@ -354,7 +354,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_2, scalarfield){
 
 
 ///this unittest tests if solve correctly returns the start vector if it already solves the problem.
-BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield){
+BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_3, scalarfield){
 	vector <double> b,startvector,resultvector;
 	testSLE.setmass(0);
 	b.push_back(-2);
@@ -376,7 +376,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield){
 	startvector.push_back(1);
 	startvector.push_back(2);
 	startvector.push_back(1);
-	testSLE.solve("Laplace",startvector, resultvector);
+	testSLE.solveLSE("Laplace",startvector, resultvector);
 	BOOST_CHECK_EQUAL(resultvector.at(0),1);
 	BOOST_CHECK_EQUAL(resultvector.at(1),2);
 	BOOST_CHECK_EQUAL(resultvector.at(2),1);
@@ -393,7 +393,7 @@ BOOST_FIXTURE_TEST_CASE(solve_LaplaceOp_periodic_3, scalarfield){
 /**
  * @brief test that a two consecutive random numbers are not the same
  *
- * @details This unittest tests the function KonGrad::getRandomUni
+ * @details This unittest tests the function LinSysEqu::getRandomUni
  */
 BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
     testSLE.startRandomGenerator(10);
@@ -406,7 +406,7 @@ BOOST_FIXTURE_TEST_CASE(getRandomUni, F){
 /**
  * @brief test that a the created matrix has the dimensions it is supposed to have.
  *
- * @details This unittest tests the function KonGrad::createRandomSparseSymmetricMatrix
+ * @details This unittest tests the function LinSysEqu::createRandomSparseSymmetricMatrix
  */
 BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
     
@@ -426,7 +426,7 @@ BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_dim, F){
 /**
  * @brief test that a the created matrix has at most 2 non-zero entries per row
  *
- * @details This unittest tests the function KonGrad::createRandomSparseSymmetricMatrix
+ * @details This unittest tests the function LinSysEqu::createRandomSparseSymmetricMatrix
  */
 BOOST_FIXTURE_TEST_CASE(createRandomSparseSymmetricMatrix_numNonZero, F){
     

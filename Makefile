@@ -7,11 +7,11 @@ SRCDIR=src/
 
 all: unittest main
 
-main: kongrad.o main.o geom_pbc.o timedif.o
-	$(CC) $(LDFLAGS) timedif.o kongrad.o main.o $(LDLIBS) -o main
+main: linsysequ.o main.o geom_pbc.o timedif.o
+	$(CC) $(LDFLAGS) timedif.o linsysequ.o main.o $(LDLIBS) -o main
 
-kongrad.o: $(SRCDIR)kongrad.cc $(SRCDIR)kongrad.hh
-	$(CC) $(CFLAGS) -c $(SRCDIR)kongrad.cc
+linsysequ.o: $(SRCDIR)linsysequ.cc $(SRCDIR)linsysequ.hh
+	$(CC) $(CFLAGS) -c $(SRCDIR)linsysequ.cc
 	
 sparseMatrix.o: $(SRCDIR)sparseMatrix.cc $(SRCDIR)sparseMatrix.hh
 	$(CC) $(CFLAGS) -c $(SRCDIR)sparseMatrix.cc
@@ -19,10 +19,10 @@ sparseMatrix.o: $(SRCDIR)sparseMatrix.cc $(SRCDIR)sparseMatrix.hh
 main.o: $(SRCDIR)main.cc 
 	$(CC) $(CFLAGS) -c $(SRCDIR)main.cc
 	
-unittest: test.o kongrad.o geom_pbc.o timedif.o
-	$(CC) $(LDFLAGS) timedif.o kongrad.o test.o $(LDLIBS) -o unittest
+unittest: test.o linsysequ.o geom_pbc.o timedif.o
+	$(CC) $(LDFLAGS) timedif.o linsysequ.o test.o $(LDLIBS) -o unittest
 
-test.o: $(SRCDIR)test.cc kongrad.o
+test.o: $(SRCDIR)test.cc linsysequ.o
 	$(CC) $(CFLAGS) -c $(SRCDIR)test.cc
 
 geom_pbc.o: $(SRCDIR)geom_pbc.c

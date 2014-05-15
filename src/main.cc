@@ -1,4 +1,4 @@
-#include "kongrad.hh"
+#include "linsysequ.hh"
 #define DEFINE_GLOBAL
 #include "geom_pbc.c"
 #include <iostream>
@@ -89,7 +89,7 @@ int main(int argc, char** argv){
     b.push_back(2);
     b.push_back(3);
     
-    KonGrad LGS01(A, b);
+    LinSysEqu LGS01(A, b);
     LGS01.testmv(b);
     LGS01.startRandomGenerator(0);
     
@@ -116,7 +116,7 @@ int main(int argc, char** argv){
     LGS01.setb(b);
     LGS01.setmass(atof(argv[3]));
     LGS01.calculateKonRate();
-    LGS01.solve("Laplace",b,result);
+    LGS01.solveLSE("Laplace",b,result);
 
 // Gute Zeit: 10ns
 
