@@ -1,12 +1,14 @@
 #include "linsysequ.hh"
 #include "global.h"
 #include "timedif.h"
+#include "eivtris.h"
 //#include "geom_pbc.c"
 #include <vector>
 #include <random>
 #include <cassert>
 #include <cmath>
 #include <boost/log/trivial.hpp>
+
 
 /**
  * @file linsysequ.cc
@@ -52,6 +54,7 @@ void LinSysEqu::matrixVector(const vector<double> &vecin, vector<double> &vecout
     assert(vecinDim==matrixlineDim);
     vecout.assign(vecinDim,0);
     BOOST_LOG_TRIVIAL(trace) << "matrixVector: vecin " << printVector(vecin);
+    ///@todo: make parrallel
     for (int i=0;i<vecinDim;++i){
         for (int j=0;j<vecinDim;++j){
             vecout.at(j)+=_A.at(i).at(j)*vecin.at(j);
@@ -76,6 +79,7 @@ void LinSysEqu::matrixVectorLaplace(const vector<double> &vecin, vector<double> 
 	}
 }
 
+///@deprecated use addVector with a negative scalar instead
 void LinSysEqu::diffVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
@@ -97,6 +101,7 @@ int LinSysEqu::calculateKonRate(){
     return ceil(steps);
 }
 
+///@deprecated use addVector with 1 as scalar instead
 void LinSysEqu::sumVector(const vector<double> &vecin1, const vector<double> &vecin2, vector<double> &vecout){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
@@ -124,7 +129,7 @@ void LinSysEqu::addVector(const double alpha, const vector<double> &vecin1, cons
 void LinSysEqu::skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout){
     const int vecinDim = vecin.size();
     vecout.clear();
-    
+    ///@todo make parrallel
     for (int i=0;i<vecinDim;++i){
         vecout.push_back(vecin.at(i)*alpha);
     }
@@ -215,7 +220,7 @@ void LinSysEqu::solveLSE (const string method, const vector< vector<double> > &m
 void LinSysEqu::solveLSE (const string method, const vector<double> &startvec, vector<double> &vecout){
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
-    const int bsize=_b.size();
+    const unsigned int bsize=_b.size();
     vector<double> r;
     vector<double> rnew;
     vector<double> p;
@@ -281,7 +286,7 @@ void LinSysEqu::solveLSE (const string method, const vector<double> &startvec, v
 
         beta=0.5*rnewnorm/rnorm;
         addVector(1,rnew,beta,p,pnew); //2
-        p=pnew;
+        p=pnew;///@todo: zuweisung parrallelisieren bzw. prüfen ob p,r,x überschrieben werden können
         r=rnew;
         x=xnew;
         rnorm=rnewnorm;
@@ -305,6 +310,39 @@ void LinSysEqu::solveLSE (const string method, const vector<double> &startvec, v
         vecout=xnew;
     }
     
+}
+
+void LinSysEqu::eigenvLanczos(const string method, const vector<double> &startvec, vector<double> &vecout){
+	double s = skalarProd(startvec,startvec);
+	const double tol=pow(10,-8);
+	if (s==0){
+		vecout=startvec;
+		return;
+	}
+	vector<double> v,q,alpha,beta,vnp1;
+	skalarVector(1/s,startvec,v);
+	applyA(method,v,q);
+	bool converged=false;
+	unsigned int iternum=0;
+	while (!converged){
+		alpha.push_back(skalarProd(v,q));
+		addVector(1,q,-alpha.at(iternum),v,q);
+		beta.push_back(skalarProd(q,q));
+		if(beta.at(iternum)<tol){
+			BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
+			converged=true;
+		}
+		if(iternum>startvec.size()){
+			BOOST_LOG_TRIVIAL(error) << "The algorithm did not converge. Aborted. Iterations: " << iternum;
+			break;
+		}
+		skalarVector(1/beta.at(iternum),q,vnp1);
+		applyA(method,vnp1,q);
+		addVector(1,q,-beta.at(iternum),v,q);
+		++iternum;
+		v=vnp1;
+	}
+
 }
 
 

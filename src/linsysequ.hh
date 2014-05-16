@@ -213,6 +213,17 @@ class LinSysEqu{
          */
         void solveLSE (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
         
+        /**
+         * @brief approximate the eigenvalues, using the Lanczos method
+         *
+         *
+         * @test the method LinSysEqu:eigenvLanczos needs testing
+         *
+         */
+        void eigenvLanczos (const string method, const vector<double> &startvec, vector<double> &vecout);
+
+
+
        /**
         * @brief print the vector to stdout
         */

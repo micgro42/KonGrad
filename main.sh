@@ -1,4 +1,5 @@
 #!/bin/bash
+export OMP_NUM_THREADS=4
 LOGLVL=3
 STEPS=50
 MASS=0.1
