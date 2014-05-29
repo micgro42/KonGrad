@@ -5,6 +5,14 @@ LDFLAGS= -fopenmp
 LDLIBS= -L/users/stud/micgro42/boost/lib -lpthread -lboost_log -lboost_unit_test_framework -lboost_thread -lboost_filesystem -lboost_date_time -lboost_chrono -lboost_system
 SRCDIR=src/
 
+debug:
+	echo `date` >> make.log
+	eche `debug` >> make.log
+	
+release:
+	echo `date` >> make.log
+	eche `release` >> make.log
+
 all: unittest main
 
 main: linsysequ.o main.o geom_pbc.o timedif.o
