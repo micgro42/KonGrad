@@ -199,9 +199,35 @@ BOOST_FIXTURE_TEST_CASE( addVector, F ){
     }
 }
 
+/**
+ * test if this function is correct if the output-vector is one of the input-vectors
+ *
+ * This unittest tests the function LinSysEqu::addVector
+ */
+BOOST_FIXTURE_TEST_CASE( addVector_self, F ){
+
+    vector<double> vecin1,vecin2;
+    double alpha,beta;
+    alpha=0.5;
+    beta=-0.5;
+
+    for (int i=0;i<5;++i){
+        vecin1.push_back(i+0.75);
+        vecin2.push_back(i+0.5);
+    }
+
+    BOOST_REQUIRE(vecin1.size()==vecin2.size());
+
+    testSLE.addVector(alpha, vecin1, beta, vecin2, vecin1);
+
+    for (int i=0;i<5;++i){
+        BOOST_CHECK_EQUAL(vecin1.at(i),0.125);
+    }
+}
+
 
 /**
- * test if a vector of precise doubles is correctly multplied by another double
+ * test if a vector of precise doubles is correctly multiplied by another double
  *
  * This unittest tests the function LinSysEqu::skalarVector .
  */
@@ -222,6 +248,27 @@ BOOST_FIXTURE_TEST_CASE( skalarVector, F ){
     }
 }
 
+/**
+ * test if the functions returns the correct result if the output-vector is also the input-vector
+ *
+ * This unittest tests the function LinSysEqu::skalarVector .
+ */
+BOOST_FIXTURE_TEST_CASE( skalarVector_self, F ){
+    vector<double> vecin;
+    double scalar=2.5;
+
+    for (int i=0;i<5;++i){
+        vecin.push_back(i+0.5);
+    }
+
+    testSLE.skalarVector(scalar, vecin, vecin);
+
+    double truth;
+    for (int i=0;i<5;++i){
+        truth=(i+0.5)*2.5;
+        BOOST_CHECK_EQUAL(vecin.at(i),truth);
+    }
+}
 
 /**
  * @brief test that a diagonal matrix and a vector are multiplied correctly
@@ -276,8 +323,8 @@ BOOST_FIXTURE_TEST_CASE(solveSLE_sparseMatrix, F){
     testSLE.setMatrix(matrix);
     testSLE.setb(b);
     vector<double> resultvector;
-    testSLE.solveLSE("sparseMatrix",startvector, resultvector);
-    
+    int exitcode=testSLE.solveLSE("sparseMatrix",startvector, resultvector);
+    BOOST_REQUIRE(exitcode==0);
     for( vector<double>::const_iterator i = resultvector.begin(); i != resultvector.end(); ++i){
         BOOST_CHECK_CLOSE(*i,1,0.000001); //tolerance 10^-8
     }
@@ -313,7 +360,8 @@ BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_1, scalarfield){
 	controlvector.push_back(1);
 	controlvector.push_back(2);
 	controlvector.push_back(1);
-	testSLE.solveLSE("Laplace",b, resultvector);
+	int exitcode=testSLE.solveLSE("Laplace",b, resultvector);
+	BOOST_REQUIRE(exitcode==0);
 	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
 	for (int i=0;i<9;++i){
 	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
@@ -345,7 +393,8 @@ BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_2, scalarfield){
 	controlvector.push_back(2);
 	controlvector.push_back(1);
 	startvector.assign(9,1);
-	testSLE.solveLSE("Laplace",startvector, resultvector);
+	int exitcode=testSLE.solveLSE("Laplace",startvector, resultvector);
+	BOOST_REQUIRE(exitcode==0);
 	double c=resultvector.at(0)-controlvector.at(0); // the field is only calculated upto a constant
 	for (int i=0;i<9;++i){
 	    BOOST_CHECK_CLOSE(resultvector.at(i),controlvector.at(i)+c,0.000001); //tolerance 10^-8
@@ -376,7 +425,8 @@ BOOST_FIXTURE_TEST_CASE(solveSLE_LaplaceOp_periodic_3, scalarfield){
 	startvector.push_back(1);
 	startvector.push_back(2);
 	startvector.push_back(1);
-	testSLE.solveLSE("Laplace",startvector, resultvector);
+	int exitcode=testSLE.solveLSE("Laplace",startvector, resultvector);
+	BOOST_CHECK_EQUAL(exitcode,81);
 	BOOST_CHECK_EQUAL(resultvector.at(0),1);
 	BOOST_CHECK_EQUAL(resultvector.at(1),2);
 	BOOST_CHECK_EQUAL(resultvector.at(2),1);

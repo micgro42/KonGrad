@@ -95,6 +95,7 @@ class LinSysEqu{
          *
          * This function is tested with the following unittest(s):
          *   - BOOST_FIXTURE_TEST_CASE( skalarVector, F )
+         *   - BOOST_FIXTURE_TEST_CASE( skalarVector_self, F )
          *
          * @param[in] alpha
          * @param[in] vecin
@@ -109,6 +110,10 @@ class LinSysEqu{
          *
          * @details these function combines the functionality of KonGrad::skalarVector and KonGrad::sumVector
          * \f$ \vec{v}_{\text{out}}=\alpha\vec{v}_{\text{in}1}+\beta\vec{v}_{\text{in}2} \f$
+         *
+         * This function is tested with the following unittest(s):
+         *   - BOOST_FIXTURE_TEST_CASE( addVector, F )
+         *   - BOOST_FIXTURE_TEST_CASE( addVector_self, F )
          *
          *
          */
@@ -202,7 +207,7 @@ class LinSysEqu{
          * 
          * 
          */
-        void solveLSE (const string method, const vector<double> &startvec, vector<double> &vecout);
+        int solveLSE (const string method, const vector<double> &startvec, vector<double> &vecout);
         
         /**
          * @brief solve with option to handover the matrix and known right side to the solve function
@@ -213,6 +218,17 @@ class LinSysEqu{
          */
         void solveLSE (const string method, const vector< vector<double> > &matrixin, const vector<double> &knownRightSide, const vector<double> &startvec, vector<double> &vecout);
         
+        /**
+         * @brief approximate the eigenvalues, using the Lanczos method
+         *
+         *
+         * @test the method LinSysEqu:eigenvLanczos needs testing
+         *
+         */
+        void eigenvLanczos (const string method, const vector<double> &startvec, vector<double> &vecout);
+
+
+
        /**
         * @brief print the vector to stdout
         */

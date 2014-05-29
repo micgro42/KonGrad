@@ -1,6 +1,6 @@
 CC=g++
 #CFLAGS= -fopenmp -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/ 
-CFLAGS= -fopenmp -std=c++11 -Ofast -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
+CFLAGS= -fopenmp -std=c++11 -Wall -pedantic -Ofast -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
 LDFLAGS= -fopenmp
 LDLIBS= -L/users/stud/micgro42/boost/lib -lpthread -lboost_log -lboost_unit_test_framework -lboost_thread -lboost_filesystem -lboost_date_time -lboost_chrono -lboost_system
 SRCDIR=src/
@@ -38,6 +38,9 @@ geom_pbc.o: $(SRCDIR)geom_pbc.c
 
 timedif.o: $(SRCDIR)timedif.h $(SRCDIR)timedif.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)timedif.c
+	
+eivtris.o: $(SRCDIR)eivtris.h $(SRCDIR)eivtris.h
+	$(CC) $(CFLAGS) -c $(SRCDIR)eivtris.h
 
 clean:
 	rm -f *.o main unittest
