@@ -1,19 +1,26 @@
+### Compile settings
 CC=g++
-#CFLAGS= -fopenmp -std=c++11 -Wall -pedantic -g -O0 -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/ 
-CFLAGS= -fopenmp -std=c++11 -Wall -pedantic -Ofast -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
+CFLAGS= -fopenmp -std=c++11 -Wall -Wextra -pedantic -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
+
+### Linker settings
 LDFLAGS= -fopenmp
 LDLIBS= -L/users/stud/micgro42/boost/lib -lpthread -lboost_log -lboost_unit_test_framework -lboost_thread -lboost_filesystem -lboost_date_time -lboost_chrono -lboost_system
+
+### Debug Settings
+DBGDIR = Debug
+DBGCFLAGS = -g3 -O0 -DDEBUG
+
+### Release Settings
+RLSDIR = Release
+RELCFLAGS = -Ofast -DNDEBUG
+
 SRCDIR=src/
 
-debug:
-	echo `date` >> make.log
-	eche `debug` >> make.log
-	
-release:
-	echo `date` >> make.log
-	eche `release` >> make.log
-
 all: unittest main
+
+debug: CFLAGS += $(DBGCFLAGS)
+debug: OUTDIR = $(DBGDIR)
+debug: all
 
 main: linsysequ.o main.o geom_pbc.o timedif.o
 	$(CC) $(LDFLAGS) timedif.o linsysequ.o main.o $(LDLIBS) -o main
@@ -45,4 +52,4 @@ eivtris.o: $(SRCDIR)eivtris.h $(SRCDIR)eivtris.h
 clean:
 	rm -f *.o main unittest
 	
-
+.PHONY: all clean debug release 

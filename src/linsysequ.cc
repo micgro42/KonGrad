@@ -130,12 +130,12 @@ void LinSysEqu::addVector(const double alpha, const vector<double> &vecin1, cons
 }
 
 void LinSysEqu::skalarVector(const double alpha, const vector<double> &vecin, vector<double> &vecout){
-    const int vecinDim = vecin.size();
+    const unsigned int vecinDim = vecin.size();
     if (vecout.size()!=vecinDim){
     	vecout.assign(vecinDim,0);
     }
     ///@todo make parallel
-    for (int i=0;i<vecinDim;++i){
+    for (unsigned int i=0;i<vecinDim;++i){
         vecout.at(i)=vecin.at(i)*alpha;
     }
 }
@@ -167,7 +167,7 @@ int LinSysEqu::printMatrix (const  vector< vector<double> > &matrix){
 }
 
 
-///Performance: 2 Flops
+///Performance: 2 Flops per element of vecin
 double LinSysEqu::skalarProd(const vector<double> &vecin1, const vector<double> &vecin2){
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
