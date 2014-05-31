@@ -108,8 +108,8 @@ class LinSysEqu{
          *
          * @brief function that two vectors with a scalar and adds them
          *
-         * @details these function combines the functionality of KonGrad::skalarVector and KonGrad::sumVector
-         * \f$ \vec{v}_{\text{out}}=\alpha\vec{v}_{\text{in}1}+\beta\vec{v}_{\text{in}2} \f$
+         * @details these function combines the functionality of LinSysEqu::skalarVector and LinSysEqu::sumVector
+         * \f$ \vec{v}_{\textrm{out}}=\alpha\vec{v}_{\textrm{in 1}}+\beta\vec{v}_{\textrm{in 2}} \f$
          *
          * This function is tested with the following unittest(s):
          *   - BOOST_FIXTURE_TEST_CASE( addVector, F )

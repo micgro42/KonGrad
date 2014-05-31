@@ -176,12 +176,12 @@ double LinSysEqu::skalarProd(const vector<double> &vecin1, const vector<double> 
     const int vecin1Dim = vecin1.size();
     const int vecin2Dim = vecin2.size();
     assert(vecin1Dim == vecin2Dim);
-    double skalarProd=0;
-#pragma omp parallel for shared(vecin1, vecin2) reduction(+: skalarProd)
+    double skalarProdret=0;
+#pragma omp parallel for shared(vecin1, vecin2) reduction(+: skalarProdret)
     for (int i=0;i<vecin1Dim;++i){
-        skalarProd+=vecin1.at(i)*vecin2.at(i);//2 Flops
+    	skalarProdret+=vecin1.at(i)*vecin2.at(i);//2 Flops
     }
-    return skalarProd;
+    return skalarProdret;
 }
 
 
@@ -231,7 +231,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
     const double tol=pow(10,-8);
     const double bnorm=sqrt(skalarProd(_b,_b));
     const unsigned int bsize=_b.size();
-    vector<double> r,p,s,xnew;
+    vector<double> r,p,s;
     vector<double> x=startvec;
     vecout.clear();
     
@@ -274,7 +274,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
         applyA(method,p,s); //1+ndim*2
         alpha=rnorm/skalarProd(p,s); //2
         
-        addVector(1,x,alpha,p,xnew); //2
+        addVector(1,x,alpha,p,x); //2
         
         addVector(1,r,-alpha,s,r); //2
         
@@ -284,7 +284,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
             BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
             exitcode=0;
             converged=true;
-            BOOST_LOG_TRIVIAL(info) << "resultvector: " << printVector(xnew);
+            BOOST_LOG_TRIVIAL(info) << "resultvector: " << printVector(x);
         }
         
         if ( iternum > 2*bsize ){
@@ -293,9 +293,8 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
             break;
         }
 
-        beta=0.5*rnewnorm/rnorm;
+        beta=rnewnorm/rnorm;
         addVector(1,r,beta,p,p); //2
-        x=xnew;///@todo: zuweisung parallelisieren bzw. prüfen ob x überschrieben werden können
         rnorm=rnewnorm;
     }
     if (converged){
@@ -314,7 +313,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
     	BOOST_LOG_TRIVIAL(info) << "Flops per iteration: " << NumberOfFlops;
     	BOOST_LOG_TRIVIAL(info) << "Total: " << (double)NumberOfFlops*iternum*nvol/pow(10,9) << " GFlops";
     	BOOST_LOG_TRIVIAL(info) << "Performance: " << (double)NumberOfFlops*iternum*nvol/pow(10,9)/totalcputime << " GFlops/s";
-        vecout=xnew;
+        vecout=x;
     }
     return exitcode;
     

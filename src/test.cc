@@ -35,7 +35,7 @@ struct F {
 
 //     F() : i( 0 ) { std::cout << "setup" << std::endl; }
     F(){
-        LinSysEqu testSLE; // SLE = system of linear equations
+    	cout << endl;
         logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
     }
     ~F()          {  }
@@ -46,8 +46,8 @@ struct F {
 
 struct scalarfield {
 	scalarfield(){
-		LinSysEqu testSLE; // SLE = system of linear equations
-		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
+		cout << endl;
+		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::debug);
 		ndim=2;
 
 		lsize = (int *) malloc((ndim+1) * sizeof(int));
