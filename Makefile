@@ -1,6 +1,7 @@
 ### Compile settings
 CC=g++
-CFLAGS= -Ofast -fopenmp -std=c++11 -Wall -Wextra -pedantic -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
+CXXWARNINGS=-Wall -Wextra -pedantic -Wshadow -Wlogical-op
+CFLAGS= -Ofast -fopenmp -std=c++11 $(CXXWARNINGS) -DBOOST_ALL_DYN_LINK -I/users/stud/micgro42/boost/include/
 
 ### Linker settings
 LDFLAGS= -fopenmp
