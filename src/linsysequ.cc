@@ -10,6 +10,10 @@
 #include <boost/log/trivial.hpp>
 
 
+#ifndef DEBUG
+#define at(x) operator[](x)
+#endif
+
 /**
  * @file linsysequ.cc
  * 
@@ -289,7 +293,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
             break;
         }
 
-        beta=rnewnorm/rnorm;
+        beta=0.5*rnewnorm/rnorm;
         addVector(1,r,beta,p,p); //2
         x=xnew;///@todo: zuweisung parallelisieren bzw. prüfen ob x überschrieben werden können
         rnorm=rnewnorm;
