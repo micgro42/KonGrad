@@ -225,7 +225,7 @@ class LinSysEqu{
          * @test the method LinSysEqu:eigenvLanczos needs testing
          *
          */
-        void eigenvLanczos (const string method, const vector<double> &startvec, vector<double> &vecout);
+        int eigenvLanczos (const string method, const vector<double> &startvec, vector<double> &vecout);
 
 
 

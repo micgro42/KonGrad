@@ -319,37 +319,69 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
     
 }
 
-void LinSysEqu::eigenvLanczos(const string method, const vector<double> &startvec, vector<double> &vecout){
-	double s = skalarProd(startvec,startvec);
+///@return 0 if everything went well, 80 if there are too many interations, and 82 if the startvector has length 0
+int LinSysEqu::eigenvLanczos(const string method, const vector<double> &startvec, vector<double> &vecout){
+	double s = sqrt(skalarProd(startvec,startvec));
 	const double tol=pow(10,-8);
+	int exitcode=1;
 	if (s==0){
 		vecout=startvec;
-		return;
+		exitcode=82;
+		return exitcode;
 	}
 	vector<double> v,q,alpha,beta,vnp1;
 	skalarVector(1/s,startvec,v);
 	applyA(method,v,q);
 	bool converged=false;
-	unsigned int iternum=0;
+	unsigned int iternum=1;
 	while (!converged){
+		BOOST_LOG_TRIVIAL(trace) << "q: " << printVector(q);
 		alpha.push_back(skalarProd(v,q));
-		addVector(1,q,-alpha.at(iternum),v,q);
-		beta.push_back(skalarProd(q,q));
-		if(beta.at(iternum)<tol){
+		BOOST_LOG_TRIVIAL(trace) << "alpha: " << alpha.back();
+		addVector(1,q,-alpha.back(),v,q);
+		BOOST_LOG_TRIVIAL(trace) << "q: " << printVector(q);
+		beta.push_back(sqrt(skalarProd(q,q)));
+		BOOST_LOG_TRIVIAL(debug) << "iteration: " << iternum << " beta: " << beta.back();
+		if(beta.back()<tol){
 			BOOST_LOG_TRIVIAL(info) << "The algorithm converged. Iterations: " << iternum;
 			converged=true;
+			exitcode = 0;
 		}
-		if(iternum>startvec.size()){
+		if(iternum>3*startvec.size()){
 			BOOST_LOG_TRIVIAL(error) << "The algorithm did not converge. Aborted. Iterations: " << iternum;
+			exitcode = 80;
 			break;
 		}
-		skalarVector(1/beta.at(iternum),q,vnp1);
+		skalarVector(1/beta.back(),q,vnp1);
+		BOOST_LOG_TRIVIAL(trace) << "vnp1: " << printVector(vnp1);
+		BOOST_LOG_TRIVIAL(trace) << "norm vnp1: " << sqrt(skalarProd(vnp1,vnp1));
+		BOOST_LOG_TRIVIAL(trace) << "vnp1 skalar v: " << skalarProd(vnp1,v);
 		applyA(method,vnp1,q);
-		addVector(1,q,-beta.at(iternum),v,q);
+		addVector(1,q,-beta.back(),v,q);
 		++iternum;
 		v=vnp1;
 	}
+	int n = alpha.size();
+	if (converged){
 
+		double *alphaHeap, *betaHeap, *eivalHeap;
+		alphaHeap = (double *) malloc((n+1)*sizeof(double));
+		betaHeap = (double *) malloc((n+1)*sizeof(double));
+		eivalHeap = (double *) malloc((n+1)*sizeof(double));
+
+		for (int i = 0; i < n; ++i){
+			alphaHeap[i]=alpha.at(i);
+			betaHeap[i]=beta.at(i);
+		}
+
+
+		eivtris(n, alphaHeap, betaHeap, eivalHeap);
+
+		for (int i = 0; i < n; ++i){
+			vecout.push_back(eivalHeap[i]);
+		}
+	}
+	return exitcode;
 }
 
 

@@ -9,6 +9,8 @@
 //#include "global.h"
 #include "geom_pbc.c"
 #include <vector>
+#include <algorithm> //std::sort
+
 /**
  * @file test.cc
  * 
@@ -47,7 +49,7 @@ struct F {
 struct scalarfield {
 	scalarfield(){
 		cout << endl;
-		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::debug);
+		logging::core::get()->set_filter (logging::trivial::severity >= logging::trivial::info);
 		ndim=2;
 
 		lsize = (int *) malloc((ndim+1) * sizeof(int));
@@ -123,6 +125,22 @@ BOOST_FIXTURE_TEST_CASE( skalarProd, F ){
     
     BOOST_CHECK_EQUAL( testSLE.skalarProd(b,b) , 8 );
 }
+
+/**
+ * test if that the skalar product of (2;2) and (2;2) is indeed 8.
+ *
+ * This unittest tests the function LinSysEqu::skalarProd
+ */
+BOOST_FIXTURE_TEST_CASE( skalarProd_2, F ){
+
+    vector<double> q;
+    q.push_back(1/9.);
+    q.push_back(4/9.);
+    q.push_back(7/9.);
+
+    BOOST_CHECK_CLOSE( testSLE.skalarProd(q,q) , 22/27. ,0.000001); //tolerance 10^-8
+}
+
 
 
 /**
@@ -223,6 +241,37 @@ BOOST_FIXTURE_TEST_CASE( addVector_self, F ){
     for (int i=0;i<5;++i){
         BOOST_CHECK_EQUAL(vecin1.at(i),0.125);
     }
+}
+
+/**
+ * test if this function is correct if the output-vector is one of the input-vectors, different set of numbers from addVector_self
+ *
+ *
+ * This unittest tests the function LinSysEqu::addVector
+ */
+BOOST_FIXTURE_TEST_CASE( addVector_self_2, F ){
+
+    vector<double> vecin1,vecin2;
+    double alpha,beta;
+    alpha=1;
+    beta=-2/3.;
+
+    vecin1.push_back(1/3.);
+    vecin1.push_back(2/3.);
+    vecin1.push_back(1);
+    vecin2.push_back(1/3.);
+    vecin2.push_back(1/3.);
+    vecin2.push_back(1/3.);
+
+
+    BOOST_REQUIRE(vecin1.size()==vecin2.size());
+
+    testSLE.addVector(alpha, vecin1, beta, vecin2, vecin1);
+
+    BOOST_CHECK_EQUAL(vecin1.at(0),1./9);
+    BOOST_CHECK_EQUAL(vecin1.at(1),4./9);
+    BOOST_CHECK_EQUAL(vecin1.at(2),7./9);
+
 }
 
 
@@ -509,6 +558,37 @@ BOOST_FIXTURE_TEST_CASE(createRandomVector, F){
         BOOST_CHECK(a.at(i)!=b.at(i));
     }
 }
+
+
+/**
+ *
+ *
+ * This unittest tests the function LinSysEqu::eigenvLanczos
+ */
+BOOST_FIXTURE_TEST_CASE( eigenvLanczos, F ){
+
+	vector< vector<double> > matrix;
+	vector<double> line;
+	const int dim=5;
+	for (int i=0;i<dim;++i){
+		line.assign(dim,0);
+		line.at(i)=i+1;
+		matrix.push_back(line);
+	}
+	testSLE.setMatrix(matrix);
+	vector<double> startvec,eigenv;
+	startvec.assign(dim,1);
+	int exitcode = testSLE.eigenvLanczos("sparseMatrix",startvec,eigenv);
+	cout << "eigenvLanczos: Exitcode: " << exitcode << endl;
+	BOOST_REQUIRE(exitcode==0);
+	sort(eigenv.begin(),eigenv.end());
+	for (unsigned int i=0;i<eigenv.size();++i){
+		BOOST_CHECK_CLOSE( eigenv.at(i) , i+1 ,0.000001); //tolerance 10^-8
+	}
+}
+
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )
