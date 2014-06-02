@@ -321,6 +321,7 @@ int LinSysEqu::solveLSE (const string method, const vector<double> &startvec, ve
 
 ///@return 0 if everything went well, 80 if there are too many interations, and 82 if the startvector has length 0
 int LinSysEqu::eigenvLanczos(const string method, const vector<double> &startvec, vector<double> &vecout){
+	vecout.clear();
 	double s = sqrt(skalarProd(startvec,startvec));
 	const double tol=pow(10,-8);
 	int exitcode=1;
